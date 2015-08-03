@@ -73,16 +73,16 @@ matrix $A$ can be formulated as follows:
 
 \begin{codebox}
 \Procname{$\proc{Sparse Interaction}(A)$}
-\li $\func{map}(b, a) = \frac{2Da-a^2+2b-3a-2}{2}$
-\li $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2-D}{2}$
-\li \For $\id{row} in A$
-\li     $N_{zc} \gets nonzero columns of row$
-\li     \For each combination $a, b$ of elements of $N_{zc}$
-\li         $k \gets \func{map}(b, a)$
-\li         $i \gets index of \id{row}$
-\li         $B[i, k] \gets \id{row}[a] * \id{row}[b]$
-        \End
-    \End
+    \zi $\func{map}(b, a) = \frac{2Da-a^2+2b-3a-2}{2}$
+    \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2-D}{2}$
+    \zi \For $\id{row}$ in $A$ \Repeat
+    \zi     $N_{zc} \gets$ nonzero columns of $row$
+    \zi     \For each combination $a, b$ of elements of $N_{zc}$ \Repeat
+    \zi         $k \gets \func{map}(b, a)$
+    \zi         $i \gets$ index of $\id{row}$
+    \zi         $B[i, k] \gets \id{row}[a] \cdot \id{row}[b]$
+            \End
+       	\End
 \end{codebox}
 
 \section{Complexity Analysis}
