@@ -23,44 +23,50 @@ FILL THIS IN
 
 Introduction
 Interaction features are a way of capturing correlations between features in a machine 
-learning setting. They consist of products of combinations of features. This work 
-describes a method for efficiently calculating second degree interaction features on a 
-sparse matrix, and could be generalized to higher orders.
-
-Consider the following matrix:
-
-\[ \left( \begin{array}{cccc}
-3 & 0 & 0 & 3 \\
-0 & 4 & 2 & 0 \\
-1 & 2 & 0 & 3 \end{array} \right)\]
+learning setting. A feature vector $\vec{x}$ of dimensionality $D$ has second degree interaction features 
+$\{x_a \cdot x_b : a, b \in \{0,1,..., D-1\} \land a < b\}$, 
+so a $D$ dimensional vector has $\binom{D}{2} = \frac{D^2-D}{2}$ second degree interaction features. A naive
+approach to calculating these features is to simply iterate through the combinations of the column indices.
+For a sparse vector, many of the resulting interaction features would be zero, and could therefore be ignored.
+This work describes a method to efficiently calculate second degree interaction features for a sparse matrix 
+that has time and space complexities that decrease quadratically with the density of the input matrix with respect to the naive approach.
 
 
-If each row is an instance vector, then the interaction feature matrix is
 
-\[ \left( \begin{array}{cccccc}
-0 & 0 & 9 & 0 & 0 & 0 \\
-0 & 0 & 0 & 8 & 0 & 0 \\
-2 & 0 & 3 & 0 & 6 & 0 \end{array} \right)\]
+%Consider the following matrix:
 
-Note that there are $\binom{D}{2} = \frac{D^2-D}{2}$ columns in the interaction matrix, which is D choose 2, 
-since we generate products of all combinations of 2 features in the original matrix. 
-Which column corresponds with which product pair is not important so long as it’s 
-consistent. In this example, each column in the interaction matrix corresponded to the 
-following product pairs: $(1, 2),  (1, 3),  (1, 4),  (2, 3), ( 2, 4), (3, 4)$.
+%\[ \left( \begin{array}{cccc}
+%3 & 0 & 0 & 3 \\
+%0 & 4 & 2 & 0 \\
+%1 & 2 & 0 & 3 \end{array} \right)\]
 
-Notice that the interaction matrix contains many zero entries. This is of course because 
-the original matrix contained zero entries, so the interaction features, which are 
-products of pairs of features, contain many zeros. This means that the only products that 
-need to actually be calculated or those for which both features in the combination are 
-nonzero. If the original matrix is sparse and represented in a sparse matrix format 
-(e.g. compressed sparse row), a list of nonzero column indices are stored for each row 
-and are easily retrievable in $O(1)$ time. Interaction features can be generated from this 
-list via the following method.
+
+%If each row is an instance vector, then the interaction feature matrix is
+
+%\[ \left( \begin{array}{cccccc}
+%0 & 0 & 9 & 0 & 0 & 0 \\
+%0 & 0 & 0 & 8 & 0 & 0 \\
+%2 & 0 & 3 & 0 & 6 & 0 \end{array} \right)\]
+
+%Note that there are $\binom{D}{2} = \frac{D^2-D}{2}$ columns in the interaction matrix, which is D choose 2, 
+%since we generate products of all combinations of 2 features in the original matrix. 
+%Which column corresponds with which product pair is not important so long as it’s 
+%consistent. In this example, each column in the interaction matrix corresponded to the 
+%following product pairs: $(1, 2),  (1, 3),  (1, 4),  (2, 3), ( 2, 4), (3, 4)$.
+
+%Notice that the interaction matrix contains many zero entries. This is of course because 
+%the original matrix contained zero entries, so the interaction features, which are 
+%products of pairs of features, contain many zeros. This means that the only products that 
+%need to actually be calculated or those for which both features in the combination are 
+%nonzero. If the original matrix is sparse and represented in a sparse matrix format 
+%(e.g. compressed sparse row), a list of nonzero column indices are stored for each row 
+%and are easily retrievable in $O(1)$ time. Interaction features can be generated from this 
+%list via the following method.
 
 \section{Approach}
-Let the list of nonzero columns for a given row be $N_{zc}$. The nonzero second degree 
+Let the list of nonzero columns for a given row $\vec{x}$ be denoted by $N_{zc}$. The nonzero second degree 
 interaction features are simply the products of all combinations of two elements whose 
-columns are in $N_{zc}$. However, to do this efficiently, a consistent mapping from the column 
+columns are in $N_{zc}$. However, to properly place an interaction feature into the correct column, a mapping from the column 
 index pairs of $N_{zc}$ into the columns of the interaction matrix is needed. The mapping is 
 from the space (a, b) where a,b are in $1,2,..., D$ onto the space $1,2,..., \frac{D^2-D}{2}$. This 
 is isomorphic to mapping the coordinates of the upper triangle of a matrix onto a flat 
@@ -75,9 +81,9 @@ matrix $A$ can be formulated as follows:
 \Procname{$\proc{Sparse Interaction}(A)$}
     \zi $\func{map}(b, a) = \frac{2Da-a^2+2b-3a-2}{2}$
     \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2-D}{2}$
-    \zi \For $\id{row}$ in $A$ \Repeat
+    \zi \For $\id{row}$ in $A$ \Do
     \zi     $N_{zc} \gets$ nonzero columns of $row$
-    \zi     \For each combination $a, b$ of elements of $N_{zc}$ \Repeat
+    \zi     \For each combination $a, b$ of elements of $N_{zc}$ \Do
     \zi         $k \gets \func{map}(b, a)$
     \zi         $i \gets$ index of $\id{row}$
     \zi         $B[i, k] \gets \id{row}[a] \cdot \id{row}[b]$
