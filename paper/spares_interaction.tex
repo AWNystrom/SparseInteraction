@@ -54,8 +54,8 @@ matrix $A$ can be formulated as follows:
     \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2-D}{2}$
     \zi \For $\id{row}$ in $A$ \Do
     \zi     $N_{zc} \gets$ nonzero columns of $row$
-    \zi     \For $i \gets 0 \To |N_{zc}|-2$ \Do
-    \zi         \For $j \gets i+1 \To |N_{zc}|-1$ \Do
+    \zi     \For $i \gets 0 \To |N_{zc}|-1$ \Do
+    \zi         \For $j \gets i+1 \To |N_{zc}|$ \Do
     \zi             $k \gets \func{map}(i, j)$
     \zi             $r \gets$ index of $\id{row}$
     \zi             $B[r, k] \gets \id{row}[i] \cdot \id{row}[j]$
