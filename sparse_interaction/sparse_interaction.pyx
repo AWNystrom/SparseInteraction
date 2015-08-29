@@ -10,7 +10,6 @@ from scipy.sparse import coo_matrix
 from itertools import combinations
 
 from libc.math cimport pow
-from libcpp cimport bool
 
 ctypedef np.uint64_t INDEXDTYPE
 
