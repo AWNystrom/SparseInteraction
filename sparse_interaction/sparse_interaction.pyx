@@ -31,9 +31,6 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
         cdef INDEXDTYPE a, b, x, y, row_num, interaction_col, n_cols_X, output_dim, nnz, num_interactions = 0, min_col_count
         cdef int combo_j_offset, combo_i_offset
         
-        from time import time
-        
-        tdiff = time()
         n_cols_X = X.shape[1]
         if interaction_only == 1:
             combo_j_offset = 1
@@ -49,8 +46,6 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
             output_dim = <INDEXDTYPE>((n_cols_X**2+n_cols_X) / 2) #diagonal counted
             for nnz in np.bincount(X.nonzero()[0]):
                 num_interactions += <INDEXDTYPE>((pow(nnz,2)+nnz)/2)
-        ##print 'Counting num_interactions took', time() - tdiff
-        #Get the number of nonzero interaction features
         
         if combine:
             num_interactions += X.nnz
@@ -59,7 +54,6 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
         if num_interactions == 0:
             return X
         
-        tdiff = time()
         cdef np.ndarray[INDEXDTYPE, ndim=1, mode='c'] rows = np.ndarray(shape=num_interactions, dtype=np.uint64, order='C')
         cdef np.ndarray[INDEXDTYPE, ndim=1, mode='c'] cols = np.ndarray(shape=num_interactions, dtype=np.uint64, order='C')
         cdef np.ndarray[double, ndim=1, mode='c'] nz_data, data = np.ndarray(shape=num_interactions, dtype=np.double, order='C')
@@ -67,9 +61,6 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
         cdef INDEXDTYPE interaction_index = 0, rownum = 0, num_nz_cols, col_a, col_b
         cdef double part1, part2, dat_a, dat_b
         
-        ##print 'declaring arrays took', time() - tdiff
-        
-        tdiff = time()
         for row in X:
             #print 'rownum', rownum
             nz_cols = row.nonzero()[1].astype(np.uint64)
@@ -109,43 +100,10 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
                         interaction_index += 1
             rownum += 1
         
-        ##print 'calculating features took', time() - tdiff
-
-        tdiff = time()
-        #print 'output_dim', output_dim
-        #print 'max(cols)', max(cols)
-        
-        #print 'X.shape[0]', X.shape[0]
-        #print 'rows.shape', len(rows)
-        #print 'cols.shape', len(cols)
-        #print 'data.shape', len(data)
-        #print 'max(rows)', max(rows)
-        
-        #print 'len(data)', len(data)
-        
-        
-        #print 'rows', rows
-        
         X_interaction = coo_matrix((data, (rows, cols)), 
                                     shape=(X.shape[0], output_dim), dtype=X.dtype).tocsr()
-        ##print 'forming coo matrix took', time() - tdiff
-        
-        #tdiff = time()
-        #X_interaction = hstack((X, X_interaction)).tocsr()
-        ###print 'hstacking', time() - tdiff
         
         return X_interaction
     
     def __repr__(self):
-        return "<SparseInteractionFeatures>"
-
-"""
-4 2 0 1
-
-  0 1 2 3
-0 0 1 2 3
-1 - 4 5 6
-2 - - 7 8
-3 - - - 9
-
-"""
+        return "<SparsePolynomialFeatures>"
