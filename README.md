@@ -1,2 +1,2 @@
 # SparseInteraction
-Generate second degree interaction features on a sparse matrix while keeping it sparse.
+Generate second degree polynomial features on a sparse matrix while keeping it sparse.
