@@ -7,7 +7,6 @@ cimport numpy as np
 import cython
 from sklearn.base import TransformerMixin, BaseEstimator
 from scipy.sparse import coo_matrix
-from itertools import combinations
 
 from libc.math cimport pow
 
