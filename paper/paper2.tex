@@ -32,11 +32,11 @@
 \maketitle
 
 \begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
-We give an algorithm to efficiently calculate second degree polynomial or interaction 
-that has complexity quadratically with respect to the density of the matrix, and can therefore be much faster than 
-the naive approach and allows for the matrix to remain in sparse form. We apply the method
-to several real datasets and give both analytical and empirical comparisons with the
-naive approach.
+We give an algorithm to efficiently calculate second degree polynomial or interaction features for a sparse matrix.
+The algorithm has average time complexity that decreases quadratically with respect to the density of the matrix, which
+is a large improvement over the naive approach. It also allows for the matrix to remain in sparse form, reducing memory demands.
+We apply the method to several real datasets and give both analytical and empirical comparisons with the
+naive approach. The work also gives a generalizable method for creating algorithms for higher orders of polynomials.
 \end{abstract}
 
 \section{Introduction}
