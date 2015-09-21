@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[11pt,twocolumn]{article}
 
 \usepackage{array}
 \usepackage{clrscode3e}
@@ -64,7 +64,7 @@ boundaries (figure \eqref{fig:boundaries} on page \pageref{fig:boundaries}) with
 these to an RBF SVM via scikit-learn\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}} 
 and gradient boosted decision trees via the xgboost package\footnote{\url{https://github.com/dmlc/xgboost/}}.
 
-\begin{sidewaysfigure}
+\begin{sidewaysfigure*}[h]
     \centering
     \includegraphics[scale=0.5]{classifier_boundaries.png}
     \caption{Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision.
@@ -72,7 +72,7 @@ and gradient boosted decision trees via the xgboost package\footnote{\url{https:
              types are logistic regression, logistic regression with second degree polynomial features, RBF SVM, and gradient boosting with decision trees.
              The accuracy of each model is shown in the bottom right corner of that model's subplot.}
     \label{fig:boundaries}
-\end{sidewaysfigure}
+\end{sidewaysfigure*}
 
 %Same as above, but in vector graphic form. Use this in the final.
 %\begin{sidewaysfigure}
@@ -171,7 +171,6 @@ As can be seen, the required mapping can be viewed as mapping the upper triangul
 the diagonal), whose indicies are $I$, onto $O$. The construction of this mapping will now
 be given.
 
-\newpage
 INSERT JOHN'S PROOF HERE
 
 The mapping can be modified slightly to yield interaction features instead of polynomial features
@@ -179,7 +178,6 @@ by noting that the section of the $D \times D$ mapping matrix that will yield in
 features differs only in that its diagonal is excluded. The mapping is therefore gotten by
 taking the polinomial mapping and subtracting $i+1$.
 
-\newpage
 
 \section{The Algorithm}
 In section X we showed why a mapping from the space X
@@ -254,12 +252,12 @@ $D=1$, $101$, $201$, $301$, $401$, and $501$. Since the scikit-learn version of 
 does not exploit sparsity, we assume the method's time is invariate with respect the density of the matrix, but
 we gave it the lowest density of each dimensionality to be fair. The results are shown in figure \eqref{fig:benchmark}.
 
-\begin{figure}
-\includegraphics[scale=0.3]{benchmark_results.png}
-\caption{This plot shows how long the sparse polynomial method took to run on matrices with 1000 rows of various dimensionalities and densities and compared to the scikit-learn PolynomialFeatures class on various dimensionalities.}
-\label{fig:benchmark}
-\centering
-\end{figure}
+\begin{figure*}[h]
+    \includegraphics[scale=0.3]{benchmark_results.png}
+    \caption{This plot shows how long the sparse polynomial method took to run on matrices with 1000 rows of various dimensionalities and densities and compared to the scikit-learn PolynomialFeatures class on various dimensionalities.}
+    \label{fig:benchmark}
+    \centering
+\end{figure*}
 
 As can be seen, the sparse method starts out slower than scikit-learn for each density. This
 is either due to the overhead required by the sparse method (e.g. utilizing the mapping function),
