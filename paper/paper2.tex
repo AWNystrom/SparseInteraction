@@ -53,7 +53,7 @@ In the case of $k=2$, the following set of polynomial features are augmented to 
 \{x_a \cdot x_b : a, b \in \{0,1,..., D-1\} \land a \le b\}
 \end{equation*}
 
-which results in $\binom{D+1}{D-1} = \frac{D^2+D}{2}$ additional features, and so the generation of 
+which results in $\binom{D+1}{D-1} = \frac{D^2+D}{2}$ additional features, so the generation of 
 these features for a matrix of size $N \times D$ has a time complexity of $O(ND^2)$. In the general case of degree $k$, there 
 are $\binom{D+k-1}{D-1}$ polynomial features and the time complexity is $O(ND^k)$.
 
@@ -97,8 +97,8 @@ only the nonzero elements of $\vec{x}$ are considered during the calculation pro
 quickly access only the nonzero elements of $\vec{x}$ and (2) The ability to know which polynomial feature column
 the product of features with indices $a$ and $b$ should be stored in.
 
-The first of these necessary components is gotten simply by using the appropriate data structure
-to store the sparse matrix (e.g. storing it in compressed sparse row format). The second component 
+The first of these necessary components is obtained simply by using the appropriate data structure
+to store the sparse matrix (e.g. storing it in compressed sparse row form). The second component 
 is not only less readily available, but its necessity is less obvious. To make this need more clear, consider the
 algorithm for the brute force calculation of polynomial features:
 
@@ -299,7 +299,7 @@ In terms of the upper triangular matrix analogy, this corresponds with mapping t
 the space $\{0, 1, ..., \binom{D+k-1}{D-1}-1\}$. For the average case of $dD$ nonzero elements per row, 
 there will be $\binom{dD+k-1}{dD-1} = $ polynomial features, so the average time complexity for an $N \times D$ matrix
 is $\Theta(Nd^kD^k)$, which means that its time complexity polynomially decreases with respect to the density
-compared to the dense algorithm (which has $O(ND^k)$ and $\Theta(ND^3)$).
+compared to the dense algorithm (which has $O(ND^k)$ and $\Theta(ND^k)$).
 
 \vskip 0.2in
 \bibliography{paper2}{}
