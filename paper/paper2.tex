@@ -209,7 +209,7 @@ the polynomial feature between two input columns is mapping onto. Combining thes
        	\End
 \end{codebox}
 
-Using the mapping for interaction features and changing the bounds in the loop conditions, 
+Using the mapping for interaction features and changing the bounds in the loop conditions and the size of the output matrix, 
 the algorithm can be modified to give second order interaction features:
 
 \begin{codebox}
@@ -217,7 +217,7 @@ the algorithm can be modified to give second order interaction features:
     \zi $\func{InterMap}(a, b) = \frac{2Da-a^2+2b-3a-2}{2}$
     \zi $N \gets$ row count of $A$
     \zi $D \gets$ column count of $A$
-    \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2+D}{2}$
+    \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2-D}{2}$
     \zi \For $\id{row}$ in $A$ \Do
     \zi     $N_{zc} \gets$ nonzero columns of $row$
     \zi     \For $i \gets 0 \To |N_{zc}|-1$ \Do
