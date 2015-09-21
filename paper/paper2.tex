@@ -9,6 +9,7 @@
 \usepackage{hyperref}
 \usepackage{rotating}
 \usepackage{svg}
+\usepackage{pdfpages}
 
 \newcommand{\defeq}{\vcentcolon=}
 \newcommand{\eqdef}{=\vcentcolon}
@@ -72,6 +73,17 @@ and gradient boosted decision trees via the xgboost package\footnote{\url{https:
              The accuracy of each model is shown in the bottom right corner of that model's subplot.}
     \label{fig:boundaries}
 \end{sidewaysfigure}
+
+%Same as above, but in vector graphic form. Use this in the final.
+%\begin{sidewaysfigure}
+%    \centering
+%    \includegraphics[scale=0.65]{classifier_boundaries.pdf}
+%    \caption{Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision.
+%             The plain dataset is shown in the first column. Each other column is a type of classifier applied to that dataset. The classifier
+%             types are logistic regression, logistic regression with second degree polynomial features, RBF SVM, and gradient boosting with decision trees.
+%             The accuracy of each model is shown in the bottom right corner of that model's subplot.}
+%    \label{fig:boundaries}
+%\end{sidewaysfigure}
 
 With polynomial features added, a simple linear classifier is capable of drawing decision boundaries
 that take on the form of arbitrary parabolas, hyperbolas, and elipses. Beyond classification, polynomial regression \cite{theoryoflinearmodels} is a staple regression method.
