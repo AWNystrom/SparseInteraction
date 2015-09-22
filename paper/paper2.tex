@@ -130,7 +130,7 @@ algorithm for the brute force calculation of polynomial features:
        	\End
 \end{codebox}
 
-Notice that, for an individual row, the location of a polynomial feature ($\id{row}i \cdot \id{row}j$) can be determined
+Notice that, for an individual row, the location of a polynomial feature ($\id{row}[i] \cdot \id{row}[j]$) can be determined
 by a simple counter $k$ that is incremented each pass through the inner loop. This cannot be
 done if we only calculate products between nonzero elements of $\vec{x}$, because all that
 will be known is the nonzero element indices - many iterations will be skipped (hence the improved computational complexity).
