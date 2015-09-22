@@ -75,7 +75,7 @@ and gradient boosted decision trees via the xgboost package\footnote{\url{https:
 %    \label{fig:boundaries}
 %\end{sidewaysfigure}
 
-\begin{sidewaysfigure*}[ht!]
+\begin{sidewaysfigure*}[ht!, numbered]
     \centering
     \includegraphics[scale=0.5]{classifier_boundaries.png}
     \caption{Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision.
@@ -252,7 +252,7 @@ $D=1$, $101$, $201$, $301$, $401$, and $501$. Since the scikit-learn version of 
 does not exploit sparsity, we assume the method's time is invariate with respect the density of the matrix, but
 we gave it the lowest density of each dimensionality to be fair. The results are shown in figure \eqref{fig:benchmark} on page \pageref{fig:benchmark}.
 
-\begin{figure*}[ht!]
+\begin{figure*}[ht!, numbered]
     \includegraphics[scale=0.3]{benchmark_results.png}
     \caption{This plot shows how long the sparse polynomial method took to run on matrices with 1000 rows of various dimensionalities and densities and compared to the scikit-learn PolynomialFeatures class on various dimensionalities.}
     \label{fig:benchmark}
@@ -270,7 +270,7 @@ the algorithm, we applied it to two real world datasets: 20newsgroups\footnote{\
 from the UCI Machine Learning Repository \cite{Lichman:2013}\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Connect-4}}. We compare the time and space required by the sparse method and scikit-learn in table \eqref{table:results}.
 
 \begin{center}
-    \begin{tabular}{c | c | c} \label{table:results}
+    \begin{tabular}[numbered]{c | c | c} \label{table:results}
  %       \hline
         dataset             & 20newsgroups  & connect-4 \\ \hline
         instances           & 11314        & 67557    \\ \hline
