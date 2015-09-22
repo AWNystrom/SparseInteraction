@@ -269,7 +269,8 @@ The above benchmark was done on synthetic data. To more realistically determine 
 the algorithm, we applied it to two real world datasets: 20newsgroups\footnote{\url{http://scikit-learn.org/stable/datasets/twenty_newsgroups.html}} and connect-4, which was obtained
 from the UCI Machine Learning Repository \cite{Lichman:2013}\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Connect-4}}. We compare the time and space required by the sparse method and scikit-learn in table \eqref{table:results}.
 
-\begin{center}
+\begin{table}
+    \centering
     \begin{tabular}[numbered]{c | c | c} \label{table:results}
  %       \hline
         dataset             & 20newsgroups  & connect-4 \\ \hline
@@ -283,7 +284,8 @@ from the UCI Machine Learning Repository \cite{Lichman:2013}\footnote{\url{https
         sparse time (s)     & 109           & 44        \\ \hline
 %        \hline
     \end{tabular}
-\end{center}
+    \caption{Time and space comparison of second degree polynomial feature calculation between the sparse method and scikit-learn.}
+\end{table}
 
 Notice that scikit-learn was unable to calculate polynomial features for the 20newsgroups 
 matrix; a memory error was encountered. The sparse method, however, succeeded in 109 seconds.
