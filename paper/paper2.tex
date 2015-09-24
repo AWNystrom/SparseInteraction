@@ -240,7 +240,7 @@ If the density is uniformly distributed across all rows, $E[|N_{zc}|] = dD$, but
 then, the innermost loop will each be executed $\frac{D^2+D}{2}$ times, but on average, $\frac{d^2D^2+dD}{2}$ times.
 The operations in the innermost loop are constant. The time complexity is therefore $O(ND^2)$ and $\Theta(Nd^2D^2)$.
 
-It's often the case in a machine learning setting that the input matrix has near uniform density across its rows.
+In machine learning, an input matrix often has near uniform density across its rows.
 For example, if the matrix is sparse due to one-of-m encoding (also known as one-hot vectors), each row vector will
 have the same number of nonzero components.
 
