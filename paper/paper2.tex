@@ -202,7 +202,7 @@ the polynomial feature between two input columns is mapping onto. Combining thes
     \zi         \For $j \gets i \To |N_{zc}|$ \Do
     \zi             $k \gets \func{PolyMap}(i, j)$
     \zi             $r \gets$ index of $\id{row}$
-    \zi             $B[r, k] \gets \id{row}[i] \cdot \id{row}[j]$
+    \zi             $B[r, k] \gets \id{row}[N_{zc}[i]] \cdot \id{row}[N_{zc}[j]]$
                 \End
             \End
        	\End
@@ -223,7 +223,7 @@ the algorithm can be modified to give second order interaction features:
     \zi         \For $j \gets i+1 \To |N_{zc}|$ \Do
     \zi             $k \gets \func{InterMap}(i, j)$
     \zi             $r \gets$ index of $\id{row}$
-    \zi             $B[r, k] \gets \id{row}[i] \cdot \id{row}[j]$
+    \zi             $B[r, k] \gets \id{row}[N_{zc}[i]] \cdot \id{row}[N_{zc}[j]]$
                 \End
             \End
        	\End
