@@ -1,7 +1,7 @@
 import sparse_interaction
 from sklearn.datasets import fetch_20newsgroups_vectorized
 from sklearn.cross_validation import StratifiedKFold
-from sklearn.svm import LinearSVC
+from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import f1_score
 
 dat = fetch_20newsgroups_vectorized()
@@ -9,12 +9,14 @@ X = dat.data
 Y = dat.target
 cv = StratifiedKFold(Y)
 
+X = X[:, :20000]
+
 si = sparse_interaction.SparseInteractionFeatures()
 X_i = si.transform(X)
 
 scores, scores_i = [], []
 
-clf = LinearSVC()
+clf = SGDClassifier(penalty='l1', n_iter=10)
 
 for train, test in cv:
     clf.fit(X[train], Y[train])
