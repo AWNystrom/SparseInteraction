@@ -123,7 +123,8 @@ algorithm for the brute force calculation of polynomial features:
     \zi     $k \gets 0$
     \zi     \For $\i \gets 0 \To D$ \Do
     \zi         \For $\j \gets i \To D$ \Do
-    \zi             $B[i, k] \gets \id{row}[i] \cdot \id{row}[j]$
+    \zi             $r \gets$ index of $\id{row}$
+    \zi             $B[r, k] \gets \id{row}[i] \cdot \id{row}[j]$
     \zi             $k \gets k + 1$
                 \End
             \End
