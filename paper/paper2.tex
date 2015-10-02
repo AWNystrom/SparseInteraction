@@ -1,4 +1,4 @@
-\documentclass[11pt,onecolumn]{article}
+\documentclass[11pt,twocolumn]{article}
 
 \usepackage{array}
 \usepackage{clrscode3e}
@@ -64,26 +64,28 @@ boundaries (figure \eqref{fig:boundaries} on page \pageref{fig:boundaries}) with
 these to an RBF SVM via scikit-learn\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}} 
 and gradient boosted decision trees via the xgboost package\footnote{\url{https://github.com/dmlc/xgboost/}}.
 
-%Same as above, but in vector graphic form. Use this in the final.
-%\begin{sidewaysfigure}
-%    \centering
-%    \includegraphics[scale=0.65]{classifier_boundaries.pdf}
-%    \caption{Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision.
-%             The plain dataset is shown in the first column. Each other column is a type of classifier applied to that dataset. The classifier
-%             types are logistic regression, logistic regression with second degree polynomial features, RBF SVM, and gradient boosting with decision trees.
-%             The accuracy of each model is shown in the bottom right corner of that model's subplot.}
-%    \label{fig:boundaries}
-%\end{sidewaysfigure}
+To demonstrate the benefit of polynomial features in regression, we two ordinary least squares models to $y=sin(x) + \mathcal{N}(0, 0.1), x \in [0, \pi]$. The first model (the blue curve) was given only $x$ as its input. The second model (the green curve) was given $x$ and second degree polynomial features derived from $x$ (namely $x^2$). The curves the models learned can be seen in figure \ref{fig:regression}.
 
-\begin{sidewaysfigure*}[ht!, numbered]
+
+\begin{sidewaysfigure}
     \centering
-    \includegraphics[scale=0.5]{classifier_boundaries.png}
-    \caption{Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision.
+    \includegraphics[scale=0.3]{boundaries.eps}
+    
+     \caption{\footnotesize{Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision.
              The plain dataset is shown in the first column. Each other column is a type of classifier applied to that dataset. The classifier
              types are logistic regression, logistic regression with second degree polynomial features, RBF SVM, and gradient boosting with decision trees.
-             The accuracy of each model is shown in the bottom right corner of that model's subplot.}
+             The accuracy of each model is shown in the bottom right corner of that model's subplot.}}
     \label{fig:boundaries}
-\end{sidewaysfigure*}
+\end{sidewaysfigure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.4]{regression.eps}
+     \caption{\footnotesize{Two linear regression models fit to $y=sin(x) + \mathcal{N}(0, 0.1), x \in [0, \pi]$. The blue line's model was given only $x$, while the green line's model was given $x$ and second degree polynomial features.}}
+    \label{fig:regression}
+\end{figure}
+
+%\newpage
 
 With polynomial features added, a simple linear classifier is capable of drawing decision boundaries
 that take on the form of arbitrary parabolas, hyperbolas, and elipses. Beyond classification, polynomial regression \cite{theoryoflinearmodels} is a staple regression method.
@@ -115,6 +117,7 @@ is not only less readily available, but its necessity is less obvious. To make t
 algorithm for the brute force calculation of polynomial features:
 
 \begin{codebox}
+\footnotesize
 \Procname{$\proc{Dense Polynomial Features}(A)$}
     \zi $N \gets$ row count of $A$
     \zi $D \gets$ column count of $A$
@@ -191,16 +194,17 @@ and we will use the mapping derived in X to determine which column in the output
 the polynomial feature between two input columns is mapping onto. Combining these ideas yields the following algorithm:
 
 \begin{codebox}
+\footnotesize
 \Procname{$\proc{Sparse Polynomial Features}(A)$}
     \zi $\func{PolyMap}(a, b) = \frac{2Da-a^2+2b-3a-2}{2}+a+1$
     \zi $N \gets$ row count of $A$
     \zi $D \gets$ column count of $A$
-    \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2+D}{2}$
+    \zi $B$ $\gets$ empty sparse $N \times \frac{D^2+D}{2}$ matrix
     \zi \For $\id{row}$ in $A$ \Do
     \zi     $N_{zc} \gets$ nonzero columns of $row$
     \zi     \For $i \gets 0 \To |N_{zc}|$ \Do
     \zi         \For $j \gets i \To |N_{zc}|$ \Do
-    \zi             $k \gets \func{PolyMap}(i, j)$
+    \zi             $k \gets \func{PolyMap}(N_{zc}[i], N_{zc}[j])$
     \zi             $r \gets$ index of $\id{row}$
     \zi             $B[r, k] \gets \id{row}[N_{zc}[i]] \cdot \id{row}[N_{zc}[j]]$
                 \End
@@ -212,16 +216,17 @@ Using the mapping for interaction features and changing the bounds in the loop c
 the algorithm can be modified to give second order interaction features:
 
 \begin{codebox}
+\footnotesize
 \Procname{$\proc{Sparse Interaction Features}(A)$}
     \zi $\func{InterMap}(a, b) = \frac{2Da-a^2+2b-3a-2}{2}$
     \zi $N \gets$ row count of $A$
     \zi $D \gets$ column count of $A$
-    \zi $B$ $\gets$ Compressed Sparse Row Matrix of size $N \times \frac{D^2-D}{2}$
+    \zi $B$ $\gets$ empty sparse $N \times \frac{D^2-D}{2}$ matrix
     \zi \For $\id{row}$ in $A$ \Do
     \zi     $N_{zc} \gets$ nonzero columns of $row$
     \zi     \For $i \gets 0 \To |N_{zc}|-1$ \Do
     \zi         \For $j \gets i+1 \To |N_{zc}|$ \Do
-    \zi             $k \gets \func{InterMap}(i, j)$
+    \zi             $k \gets \func{InterMap}(N_{zc}[i], N_{zc}[j])$
     \zi             $r \gets$ index of $\id{row}$
     \zi             $B[r, k] \gets \id{row}[N_{zc}[i]] \cdot \id{row}[N_{zc}[j]]$
                 \End
@@ -248,17 +253,17 @@ have the same number of nonzero components.
 \subsection{Empirical}
 To assess the performance of the algorithm on data of varied density, we compare its speed
 to the PolynomialFeatures class of the popular machine learning scikit-learn \cite{scikit-learn}.
-Uniformly random matrices of size $1000 \times D$ were generated for $d=0.2$, $0.4$, $0.6$, and $0.8$, and 
-$D=1$, $101$, $201$, $301$, $401$, and $501$. Since the scikit-learn version of the algorithm
+Uniformly random matrices of size $100 \times D$ were generated for $d=0.1$, $0.2$, $0.3$, $0.4$, and $0.5$, and 
+$D=1$, $101$, $201$, $301$, $401$, and $501$. Each point was resampled five times and averaged to decrease variance. Since the scikit-learn version of the algorithm
 does not exploit sparsity, we assume the method's time is invariate with respect the density of the matrix, but
 we gave it the lowest density of each dimensionality to be fair. The results are shown in figure \eqref{fig:benchmark} on page \pageref{fig:benchmark}.
 
-\begin{figure*}[ht!, numbered]
-    \includegraphics[scale=0.3]{benchmark_results.png}
+\begin{figure}[ht, numbered]
+    \includegraphics[scale=0.4]{benchmark.eps}
     \caption{This plot shows how long the sparse polynomial method took to run on matrices with 1000 rows of various dimensionalities and densities and compared to the scikit-learn PolynomialFeatures class on various dimensionalities.}
     \label{fig:benchmark}
     \centering
-\end{figure*}
+\end{figure}
 
 As can be seen, the sparse method starts out slower than scikit-learn for each density. This
 is either due to the overhead required by the sparse method (e.g. utilizing the mapping function),
@@ -272,12 +277,13 @@ from the UCI Machine Learning Repository \cite{Lichman:2013}\footnote{\url{https
 
 \begin{table}
     \centering
+    \small    
     \begin{tabular}[numbered]{c | c | c} \label{table:results}
  %       \hline
         dataset             & 20newsgroups  & connect-4 \\ \hline
-        instances           & 11314        & 67557    \\ \hline
+        instances           & 11,314        & 67,557    \\ \hline
         features            & 130107       & 126       \\ \hline
-        polynomial features & 8463980778 & 8,127     \\ \hline
+        polynomial features & 8,463,980,778 & 8,127     \\ \hline
         density             & 0.12          & 0.11      \\ \hline
         dense space (MB)    & Memory Error  & 4191      \\ \hline
         sparse space (MB)   & 5333          & 735       \\ \hline
