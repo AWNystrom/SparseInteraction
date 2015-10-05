@@ -58,13 +58,17 @@ which results in $\binom{D+1}{D-1} = \frac{D^2+D}{2}$ additional features, so th
 these features for a matrix of size $N \times D$ has a time complexity of $O(ND^2)$. In the general case of degree $k$, there 
 are $\binom{D+k-1}{D-1}$ polynomial features and the time complexity is $O(ND^k)$.
 
-To help visualize what second degree polynomial features are capable of in a machine learning paradigm,
-we trained a linear classifier (logistic regression) on four different datasets and show their decision
-boundaries (figure \eqref{fig:boundaries} on page \pageref{fig:boundaries}) with and without polynomial features, along with their accuracy on a holdout set. We compare
-these to an RBF SVM via scikit-learn\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}} 
-and gradient boosted decision trees via the xgboost package\footnote{\url{https://github.com/dmlc/xgboost/}}.
+To show the types of nonlinearity polynomial features are capable of imbuing a linear model with,
+we trained logistic regression models on four inseparable datasets and plot their decision boundaries, as seen in figure \eqref{fig:boundaries} on page \pageref{fig:boundaries}. We compare
+these decision boundaries to those learnt by more complex methods, namely a support vector machine with a radial basis function kernel\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}} 
+and gradient boosted decision trees\footnote{\url{https://github.com/dmlc/xgboost/}}. As can be seen, polynomial features allow a simple linear classifier is capable of drawing decision boundaries
+that in the form of arbitrary parabolas, hyperbolas, and elipses.
 
-To demonstrate the benefit of polynomial features in regression, we two ordinary least squares models to $y=sin(x) + \mathcal{N}(0, 0.1), x \in [0, \pi]$. The first model (the blue curve) was given only $x$ as its input. The second model (the green curve) was given $x$ and second degree polynomial features derived from $x$ (namely $x^2$). The curves the models learned can be seen in figure \ref{fig:regression}.
+Beyond classification, polynomial regression \cite{theoryoflinearmodels} is a staple regression method.
+We provide a demonstration of the power polynomial features can lend to a regression problem by fitting two ordinary least squares models to $y=sin(x) + \mathcal{N}(0, 0.1), x \in [0, \pi]$. The first model (the blue curve) was given only $x$ as its input. The second model (the green curve) was given $x$ and second degree polynomial features derived from $x$ (namely $x^2$). The curves the models learned can be seen in figure \ref{fig:regression}.
+
+While polynomial features are a well known and used concept in machine learning (e.g. \cite{pavlidis2002learning, konidaris2009skill, wiesler2009investigations}) and work has been done to improve their utilization (e.g. \cite{pevckov2008minimal, huang2010predicting}), this is the first work that we know of that exploits matrix sparcity 
+to improve the speed with which they are calculated and allows them to be calculated for a sparse matrix.
 
 
 \begin{sidewaysfigure}
@@ -86,11 +90,6 @@ To demonstrate the benefit of polynomial features in regression, we two ordinary
 \end{figure}
 
 %\newpage
-
-With polynomial features added, a simple linear classifier is capable of drawing decision boundaries
-that take on the form of arbitrary parabolas, hyperbolas, and elipses. Beyond classification, polynomial regression \cite{theoryoflinearmodels} is a staple regression method.
-While polynomial features are a well known and used concept in machine learning (e.g. \cite{pavlidis2002learning, konidaris2009skill, wiesler2009investigations}) and work has been done to improve their utilization (e.g. \cite{pevckov2008minimal, huang2010predicting}), this is the first work that we know of that exploits matrix sparcity 
-to improve the speed with which they are calculated and allows them to be calculated for a sparse matrix.
 
 
 \section{Sparse Polynomial Features} \label{sec:sparse}
