@@ -315,7 +315,7 @@ instead of finding a mapping from the 2-tuples of indices onto the space $\{0, 1
 construct a mapping from k-tuples of indices onto the space $\{0, 1, ..., \binom{D+k-1}{D-1}-1\}$, where $k$ is the degree of the polynomial.
 In terms of the upper triangular matrix analogy, this corresponds with mapping the upper k-simplex of a $(D, D, ..., D)$-tensor onto
 the space $\{0, 1, ..., \binom{D+k-1}{D-1}-1\}$. For the average case of $dD$ nonzero elements per row, 
-there will be $\binom{dD+k-1}{dD-1} = $ polynomial features, so the average time complexity for an $N \times D$ matrix
+there will be $\binom{dD+k-1}{dD-1}$ polynomial features, so the average time complexity for an $N \times D$ matrix
 is $\Theta(Nd^kD^k)$, which means that its time complexity polynomially decreases with respect to the density
 compared to the dense algorithm (which has $O(ND^k)$ and $\Theta(ND^k)$).
 
