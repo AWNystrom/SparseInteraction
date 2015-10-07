@@ -37,9 +37,84 @@ Let the list of nonzero columns for a given row $\vec{x}$ be denoted by $N_{zc}$
 interaction features are simply the products of all combinations of two elements whose 
 columns are in $N_{zc}$. However, to properly place an interaction feature into the correct column, a mapping from the column 
 index pairs of $N_{zc}$ into the columns of the interaction matrix is needed. The mapping is 
-from the space (a, b) where a,b are in $1,2,..., D$ onto the space $1,2,..., \frac{D^2-D}{2}$. This 
-is isomorphic to mapping the coordinates of the upper triangle of a matrix onto a flat 
-list. The following is a proof by construction for such a mapping.
+from pairs $(a, b)$,  where $a$ and $b$ are in $1,2,..., D$, and $a < b$, to $1,2,..., \frac{D^2-D}{2}$,  Such a mapping essentially consists of mapping the indices of entries in the upper triangle of a matrix to indices in a flat 
+list. We now describe the construction of such a mapping. 
+
+\subsection{Mapping construction}
+We seek a map from matrix indices $(i, j)$ (with $i < j$ and $0 \le i < D$) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
+\begin{align}
+\begin{bmatrix}
+x & 0 & 1 & 2 \\
+x & x & 3 & 4 \\
+x & x & x & 5 \\
+x & x & x & x
+\end{bmatrix}
+\end{align}
+It's considerably easier, however, to consider the same indices, but subtracted from $6$ (or more generally, from $\frac{D(D-1)}{2}$; that gives the pattern
+\begin{align}
+\label{eq:4x4mat}
+\begin{bmatrix}
+x & 6 & 5 & 4 \\
+x & x & 3 & 2 \\
+x & x & x & 1 \\
+x & x & x & x
+\end{bmatrix}
+\end{align}
+We'll call the function defined by this example $(i, j) \mapsto g(i, j)$, and then observe that 
+\begin{align}
+f(i, j) = \frac{D(D-1)}{2} - g(i, j)
+\end{align}
+
+To simplify slightly, we introduce a notation for the $n$th triangular number, 
+\begin{align}
+\begin{bmatrix}
+T_2(n) = \frac{n(n+1)}{2}
+\end{bmatrix}
+\end{align}
+\noindent
+The subscript $2$ is there to indicate that these are triangles in two dimensions; we'll use $T_3(n)$ to indicate the $n$th tetrahedral number, and so on for higher dimensions. 
+
+The codomain of $g$ is now numbers from $1$ to $T_2(D-1)$, inclusive. 
+
+Observe that in Equation~\ref{eq:4x4mat}, each entry in row $i$ lies in the range
+\begin{align}
+T_2(D-i-1) &< e \le T_2(D-i).
+\end{align}
+\noindent
+For instance, in row $2$ in our example, where $D = 4$, the entries range from $2$ to $3$, while $T_2(D-i-1) = T_2(1) = 1$ and $T_2(D-i) = T_2(2) = 3$. (Note that row indices start at zero.) Unfortunately, the numbers increase from right to left. The entry in column $j$ is just $T_2(D-i-1) + D-j$, which adds one for the rightmost column (because $D - (D-1) = 1$). 
+Thus, the formula for $g$ is simply
+\begin{align}
+g(i, j) 
+&= T_2(D-i-1) + (D-j) \\
+&= \frac{(D-i-1)(D-i)}{2} + D-j \\
+&= \frac{(D^2 - (2i)D - D - i^2 - i) + 2D - 2j}{2} \\
+&= \frac{D^2 - (2i)D + D - i^2 - i - 2j}{2}
+\end{align}
+and hence 
+\begin{align}
+f(i, j) 
+&= \frac{D(D-1)}{2} - g(i,j) \\
+&= \frac{D^2-D}{2} - \frac{D^2 - (2i)D + D - i^2 - i - 2j}{2}\\
+&= \frac{D^2-D - D^2 + (2i)D - D + i^2 + i + 2j}{2}\\
+&= \frac{(2i)D - 2D + i^2 + i + 2j}{2}
+\end{align}
+[WRONG]
+Correct result:
+\begin{align}
+R = \frac{ 2in - i^2  + 2j - 3i - 2}{2}.
+\end{align}
+\subsubsection{Other indices}
+With one-based indexing, the formula above becomes
+\begin{align}
+f_1(i, j) &= ....
+\end{align}
+
+
+
+
+
+  column 
+
 
 INSERT JOHN'S PROOF HERE
 
