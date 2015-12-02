@@ -1,0 +1,52 @@
+\relax 
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
+\citation{theoryoflinearmodels}
+\citation{pavlidis2002learning,konidaris2009skill,wiesler2009investigations}
+\citation{pevckov2008minimal,huang2010predicting}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Sparse Polynomial Features}{2}{section.2}}
+\newlabel{sec:sparse}{{2}{2}{Sparse Polynomial Features\relax }{section.2}{}}
+\newlabel{RF1}{2}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \relax \fontsize  {9}{11}\selectfont  \abovedisplayskip 8\p@ plus2\p@ minus4\p@ \abovedisplayshortskip \z@ plus\p@ \belowdisplayshortskip 4\p@ plus2\p@ minus2\p@ \def \leftmargin \leftmargini \parsep 4.5\p@ plus2\p@ minus\p@ \topsep 9\p@ plus3\p@ minus5\p@ \itemsep 4.5\p@ plus2\p@ minus\p@ {\leftmargin \leftmargini \topsep 4\p@ plus2\p@ minus2\p@ \parsep 2\p@ plus\p@ minus\p@ \itemsep \parsep }\belowdisplayskip \abovedisplayskip {Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision. The plain dataset is shown in the first column. Each other column is a type of classifier applied to that dataset. The classifier types are logistic regression, logistic regression with second degree polynomial features, RBF SVM, and gradient boosting with decision trees. The accuracy of each model is shown in the bottom right corner of that model's subplot.}}}{2}{figure.1}}
+\newlabel{fig:boundaries}{{1}{2}{\footnotesize {Decision boundaries for four classifier types on four different datasets. The darker the color, the more certain the decision. The plain dataset is shown in the first column. Each other column is a type of classifier applied to that dataset. The classifier types are logistic regression, logistic regression with second degree polynomial features, RBF SVM, and gradient boosting with decision trees. The accuracy of each model is shown in the bottom right corner of that model's subplot.}\relax }{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \relax \fontsize  {9}{11}\selectfont  \abovedisplayskip 8\p@ plus2\p@ minus4\p@ \abovedisplayshortskip \z@ plus\p@ \belowdisplayshortskip 4\p@ plus2\p@ minus2\p@ \def \leftmargin \leftmargini \parsep 4.5\p@ plus2\p@ minus\p@ \topsep 9\p@ plus3\p@ minus5\p@ \itemsep 4.5\p@ plus2\p@ minus\p@ {\leftmargin \leftmargini \topsep 4\p@ plus2\p@ minus2\p@ \parsep 2\p@ plus\p@ minus\p@ \itemsep \parsep }\belowdisplayskip \abovedisplayskip {Two linear regression models fit to $y=sin(x) + \mathcal  {N}(0, 0.1), x \in [0, \pi ]$. The blue line's model was given only $x$, while the green line's model was given $x$ and second degree polynomial features.}}}{3}{figure.2}}
+\newlabel{fig:regression}{{2}{3}{\footnotesize {Two linear regression models fit to $y=sin(x) + \mathcal {N}(0, 0.1), x \in [0, \pi ]$. The blue line's model was given only $x$, while the green line's model was given $x$ and second degree polynomial features.}\relax }{figure.2}{}}
+\newlabel{eq:input}{{2}{3}{Sparse Polynomial Features\relax }{section.2}{}}
+\newlabel{eq:output}{{2}{4}{Sparse Polynomial Features\relax }{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Approach}{4}{section.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Mapping construction}{4}{subsection.3.1}}
+\newlabel{eq:4x4mat}{{1}{4}{Mapping construction\relax }{equation.3.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Other indices}{5}{subsubsection.3.1.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Polynomial Features}{5}{subsubsection.3.1.2}}
+\newlabel{eq:4x4mat-poly}{{11}{5}{Polynomial Features\relax }{equation.3.11}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Higher dimensions}{5}{subsubsection.3.1.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.4}Higher-dimension polynomial features}{6}{subsubsection.3.1.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Inversion}{6}{subsection.3.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}The Algorithm}{7}{section.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Analysis}{7}{section.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Analytical}{7}{subsection.5.1}}
+\citation{scikit-learn}
+\citation{Lichman:2013}
+\citation{agarwal2014reliable}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Empirical}{8}{subsection.5.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces This plot shows how long the sparse polynomial method took to run on matrices with 1000 rows of various dimensionalities and densities and compared to the scikit-learn PolynomialFeatures class on various dimensionalities.}}{8}{figure.3}}
+\newlabel{fig:benchmark}{{3}{8}{This plot shows how long the sparse polynomial method took to run on matrices with 1000 rows of various dimensionalities and densities and compared to the scikit-learn PolynomialFeatures class on various dimensionalities}{figure.3}{}}
+\bibdata{paper2}
+\bibstyle{plain}
+\newlabel{table:results}{{5.2}{9}{Empirical\relax }{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Time and space comparison of second degree polynomial feature calculation between the sparse method and scikit-learn.}}{9}{table.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Summary \& Future Work}{9}{section.6}}
