@@ -166,11 +166,10 @@ Let the list of nonzero columns for a given row $\vec{x}$ be denoted by $N_{zc}$
 interaction features are simply the products of all combinations of two elements whose 
 columns are in $N_{zc}$. However, to properly place an interaction feature into the correct column, a mapping from the column 
 index pairs of $N_{zc}$ into the columns of the interaction matrix is needed. The mapping is 
-from pairs $(a, b)$,  where $a$ and $b$ are in $1,2,..., D$, and $a < b$, to $1,2,..., \frac{D^2-D}{2}$,  Such a mapping essentially consists of mapping the indices of entries in the upper triangle of a matrix to indices in a flat 
+from pairs $(i, j)$,  where $i$ and $j$ are in $0, 1, \ldots , D-1$, and $i < j$, to $0, 1,2,..., \frac{D^2-D}{2} - 1$,  Such a mapping essentially consists of mapping the indices of entries in the upper triangle of a matrix to indices in a flat 
 list. We now describe the construction of such a mapping. 
 
 \subsection{Mapping construction}
-\textbf{TODO: convert all $i$ and $j$ indices into $a$ and $b$.--jfh}
 
 We seek a map from matrix indices $(i, j)$ (with $i < j$ and $0 \le i < D$) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
 \begin{align}
@@ -182,16 +181,16 @@ x & x & x & x
 \end{bmatrix}
 \label{eq:4x4mat}
 \end{align}
-where the entry at location $(i,j)$ displays the value $f(i, j)$. 
+where the entry in row $i$, column $j$, displays the value $f(i, j)$. 
 
 To simplify slightly, we introduce a notation for the $n$th triangular number, 
 \begin{align}
 T_2(n) = \frac{n(n+1)}{2}
 \end{align}
 \noindent
-The subscript $2$ is there to indicate that these are triangles in two dimensions; we'll use $T_3(n)$ to indicate the $n$th tetrahedral number, and so on for higher dimensions. 
+The subscript $2$ indicates that these are triangles in two dimensions; we'll use $T_3(n)$ to indicate the $n$th tetrahedral number, and so on for higher dimensions. 
 
-Observe that in Equation~\ref{eq:4x4mat}, each entry in column $j$ lies in the range
+Observe that in Equation~\ref{eq:4x4mat}, each entry in column $j$ (for $j > 0$) lies in the range
 \begin{align}
 T_2(j-1) &\le e < T_2(j).
 \end{align}
@@ -215,16 +214,42 @@ f_1(i, j) &= 1+ f(i-1, j-1) \\
 & = \frac{2 + 2(i-1) + (j-1)^2-(j-1)}{2}\\
 & = \frac{2i + j^2 - 3j + 2}{2}
 \end{align}
+
+\subsubsection{Polynomial Features}
+For polynommial features, we seek a map from matrix indices $(i, j)$ (with $i \le j$ and $0 \le i < D$) to numbers $g(i, j)$ with $0 \le f(i, j) < \frac{D(D+1)}{2}$, one that follows the pattern indicated by 
+\begin{align}
+\begin{bmatrix}
+ 0 & 1 & 3 & 6 \\
+ x & 2 & 4 & 7\\
+ x & x & 5 & 8 \\
+ x & x & x & 9
+\end{bmatrix}
+\label{eq:4x4mat-poly}
+\end{align}
+i.e., essentially the same task as before, except that the diagonal is included. One can regard all but the last column of entries in Equation~\ref{eq:4x4mat-poly} as corresponding to the entries in Equation~\ref{eq:4x4mat}, but shifted to the left. Thus the formula for $g(i, j)$ is simply the formula for $f$, shifted by 1, i.e., 
+\begin{align}
+g(i, j) &= f(i, j+1)  \\
+&=  \frac{2i + (j+1)^2-(j+1)}{2}\\
+&=  \frac{2i + j^2 + j + 1)}{2}.
+\end{align}
+Alternatively, we can write this as
+\begin{align}
+g(i, j) &= i + T_2(j),
+\end{align}
+\noindent
+and get the same result. 
+
+
 \subsubsection{Higher dimensions}
 To handle three-way interactions, we need to map triples of indices in a 3-index array to a flat list, and similarly for higher-order interactions. 
 
-For three indices, $i,j,k$, with $i < j < k$ and $0 \le i,j,k < D$, we have a similar recurrence. Calling the mapping $g$, we have 
+For three indices, $i,j,k$, with $i < j < k$ and $0 \le i,j,k < D$, we have a similar recurrence. Calling the mapping $h$, we have 
 \begin{align}
-g(i,j,k) = i + T_2(j-1) + T_3(k-1);
+h(i,j,k) = i + T_2(j-1) + T_3(k-2);
 \end{align}
 if we define $T_1(i) = i$, then this has the very regular form
 \begin{align}
-g(i,j,k) = 1 + T_1(i-1) + T_2(j-1) + T_3(k-1);
+h(i,j,k) =  T_1(i) + T_2(j-1) + T_3(k-2);
 \end{align}
 and from this, the generalization to higher dimensions is straightforward. The formulas for ``higher triangular numbers'', i.e., those defined by
 \begin{align}
@@ -237,14 +262,21 @@ T_3(n) &= \sum_{i=1}^n T_{2}(n)\\
 \end{align}
 so that the formula for 3-way interactions, with zero-based indexing, becomes 
 \begin{align}
-g(i, j, k) &= 1 + (i-1) + \frac{(j-1)j}{2} + \\
-& \frac{(k-1)^3 + 3(k-1)^2 + 2(k-1)}{6}. 
+h(i, j, k) &= 1 + (i-1) + \frac{(j-1)j}{2} + \\
+& \frac{(k-2)^3 + 3(k-2)^2 + 2(k-2)}{6}. 
 \end{align}
+\subsubsection{Higher-dimension polynomial features}
+For the case where we include the diagonal in higher dimensions, we must shift $j$ by $1$, $k$ by $2$, and so on, and the formula becomes
+\begin{align}
+\ell(i,j,k) =  T_1(i) + T_2(j) + T_3(k),
+\end{align}
+with analogous formulas for higher degree polynomial interactions. 
+
 \subsection{Inversion}
 We not only want to be able to compute the ``flat index'' $f(i,j)$ corresponding to a particular index pair $(i, j)$, we'd like, given a value $N = f(i, j)$, to be able to determine $i$ and $j$. We know, given $N$, that $f(0, j) \le N \le f(j,j-1)$, i.e., that 
 \begin{align}
-\frac{j^2 - 3j + 2}{2} &\le N &\le \frac{2(j-1) + j^2 - 3j + 2}{2}\\
-{j^2 - 3j + 2} &\le 2N &\le {j^2 - j}.
+\frac{j^2 - 3j + 2}{2} &\le N \le \frac{2(j-1) + j^2 - 3j + 2}{2}\\
+{j^2 - 3j + 2} &\le 2N \le {j^2 - j}.
 \end{align}
 If we find the (real number) value $j_{*}$ for which $j_{*}^2 - j_{*} = 2N$, then we know that $j = \lfloor j_{*}\rfloor$. Finding $j_{*}$ amounts to solving a quadratic, whence
 \begin{align}
@@ -255,39 +287,25 @@ Clearly the larger value,
 j_{*} = \frac{1 + \sqrt{1 + 8N}}{2},
 \end{align}
 is the one we seek; we set $j = \lfloor j_{*}\rfloor$, and compute $i = N - \frac{j^2 - j}{2}$. 
-
 In practice, repeatedly computing square roots may be annoying; instead, when we compute $N = f(i,j)$, we can record the values of $i$ and $j$ along with the interaction features, making inversion a simple matter of looking up these values. 
 
 
-%To construct this mapping, consider a matrix of size $D \times D$ where %cell $(a,b)$ represents the
-%polynomial feature between indices $a$ and $b$ for $a,b \in I$ for vector $\vec{x}$.
+Similarly, for polynomial features, to invert 
+\begin{align}
+g(i, j) &=  \frac{2i + j^2 + j + 1)}{2}
+\end{align}
+we know that if $N = g(i,j)$, then $g(0,j) \le N \le g(j,j)$, which tells us that 
+\begin{align}
+2N \le j^2 + 3j + 1, \text{ so}\\
+0 \le j^2 + 3j + (1-N^2)
+\end{align}. 
+Solving for $j$ when this last inequality is an equality, we get 
+\begin{align}
+j_{*} = \frac{-3 \pm \sqrt{ 5 - N^2 }}{2}; 
+\end{align}
+Once again, we set $j = \lfloor j_{*}\rfloor$, and compute $i = N - \frac{j^2 + j + 1}{2}$. 
 
-%\renewcommand{\kbldelim}{(}% Left delimiter
-%\renewcommand{\kbrdelim}{)}% Right delimiter
-%\[
-%  \kbordermatrix{
-%             & x_0    & x_1   & \cdot   & \cdot   &  \cdot  &  x_{D-1} \\
-%     x_0     & 0      & 1     & \cdot   &  \cdot  &  \cdot  &  D-1     \\
-%     x_1     & -      & D     & \cdot   &  \cdot  &  \cdot  &  2D-2    \\
-%     \cdot   & \cdot  & \cdot &  \cdot  &      &      &  \cdot       \\
-%     \cdot   & \cdot  &       &  \cdot  &  \cdot  &      &  \cdot       %\\
-%     \cdot   & \cdot  &       &         &  \cdot  &  \cdot  &  \cdot       %\\
-%    x_{D-1}  & -      & \cdot &  \cdot  & \cdot   & -    &  \frac{D^2+D}%{2}-1\\
-  %}
-%\]
-
-%Again, any bijective mapping $I \mapsto O$ would suffice, but this %particular mapping could
-%be considered one of the more natural options as it maps $I$ onto $O$ %where both $I$ and $O$ are sorted in ascending order.
-%As can be seen, the required mapping can be viewed as mapping the upper %triangular matrix (including 
-%the diagonal), whose indicies are $I$, onto $O$. The construction of this %mapping will now
-%be given.
-
-
-%The mapping can be modified slightly to yield interaction features %instead of polynomial features
-%by noting that the section of the $D \times D$ mapping matrix that will %yield interaction
-%features differs only in that its diagonal is excluded. The mapping is %therefore gotten by
-%taking the polinomial mapping and subtracting $i+1$.
-
+Inverting the higher-order formulas, which involve cubics, quartics, etc., is infeasible, but storing the inverse map as described above may be practical, especially for sparse feature sets. 
 
 \section{The Algorithm}
 In section X we showed why a mapping from the space X
