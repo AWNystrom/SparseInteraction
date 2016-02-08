@@ -46,12 +46,12 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
     def __init__(self, degree, interaction_only=False, include_bias=False):
     
         if degree > 3:
-            raise Exception("SparsePolynomialFeatures currently supports degrees < 4.")
+            raise Exception("SparsePolynomialFeatures currently supports degrees of 2 or 3.")
             
         self.degree = degree
         self.interaction_only = interaction_only
         self.include_bias = include_bias
-        self.__poly_functs = [] #[self.__second_deg_poly, self.__third_deg_poly]
+        self.__poly_functs = [self.__second_deg_poly, self.__third_deg_poly]
         self.__inter_functs = [self.__second_deg_inter, self.__third_deg_inter]
     
     def fit(self, X, **fit_params):
@@ -61,7 +61,7 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
     
         X = X.tocoo() #Put back into original format. Also put the new matrix into the same format.
     
-        #how big will the output matrix be?
+        #How big will the output matrix be?
         N, D = X.shape
     
         #start degree at 2 since we're going to just copy the first degree features
@@ -78,13 +78,15 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
         funct_list = self.__inter_functs if self.interaction_only else self.__poly_functs
         
         for size, stop_ind, degree, funct in zip(sizes, stop_inds, xrange(2, self.degree+1), funct_list):
-            print stop_ind, degree, offset            
             funct(X, D, offset, rows, cols, data)
             offset += size
         
-        print 'all done'
-        interact(local=locals())
         return coo_matrix((data, (rows, cols)), shape=(N, D+sum(sizes))).tocsr()
+        
+    """
+    Each polynomial has its own method. I could have put it all into one, but
+    this would cause lots of function calls, which would add some time overhead.
+    """
     
     def __second_deg_inter(self, X, D, offset, rows, cols, data):
         #cur_ind will be used to fill in the correct array elements for when rows, cols, and data are arrays.
@@ -97,14 +99,11 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
                 for j in xrange(i+1, n_zc):
                     col2 = nz_cols[j]
                     output_col = (2*col1 + col2**2 - col2)/2
-                    if output_col == (D**2-D)/2+D:
-                            print 'This is the culprit2', (i,j)
                     rows.append(rownum)
                     cols.append(output_col + offset)
                     data.append(nz_data[i] * nz_data[j])
     
     def __third_deg_inter(self, X, D, offset, rows, cols, data):
-        print 'wow!', offset
         #cur_ind will be used to fill in the correct array elements for when rows, cols, and data are arrays.
         max_out = None
         for rownum, row in enumerate(X):
@@ -119,16 +118,50 @@ class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
                     part2 = part1 + ((col2-1)*col2)/2
                     for k in xrange(j+1, n_zc):
                         col3 = nz_cols[k]
-                        output_col = part2 + ((col3-1)**3 + 3*(col3-1)**2 + 2*(col3-1))/6
+                        output_col = part2 + ((col3-1)**3 + 3*(col3-2)**2 + 2*(col3-2))/6
                         if output_col > max_out:
                             max_out = output_col
-                        if output_col > (D**2-D)/2+D:
-                            print 'This is the culprit3', (i,j,k)
                         rows.append(rownum)
                         cols.append(output_col + offset)
                         data.append(nz_data[i] * nz_data[j] * nz_data[k])
-        print 'max_out', max_out
     
+    def __second_deg_poly(self, X, D, offset, rows, cols, data):
+      #cur_ind will be used to fill in the correct array elements for when rows, cols, and data are arrays.
+      for rownum, row in enumerate(X):
+          _, nz_cols = row.nonzero()
+          nz_data = row[0, nz_cols].toarray().flatten()
+          n_zc = len(nz_data)
+          for i in xrange(n_zc):
+              col1 = nz_cols[i]
+              for j in xrange(i, n_zc):
+                  col2 = nz_cols[j]
+                  output_col = (2*col1 + col2**2 + col2 + 1)/2
+                  rows.append(rownum)
+                  cols.append(output_col + offset)
+                  data.append(nz_data[i] * nz_data[j])
+    
+    def __third_deg_poly(self, X, D, offset, rows, cols, data):
+      #(k**3+3*k**2+2*k)/6 + (j**2+j)/2 + i
+      max_out = None
+      for rownum, row in enumerate(X):
+          _, nz_cols = row.nonzero()
+          nz_data = row[0, nz_cols].toarray().flatten()
+          n_zc = len(nz_data)
+          for i in xrange(n_zc):
+              col1 = nz_cols[i]
+              part1 = col1
+              for j in xrange(i, n_zc):
+                  col2 = nz_cols[j]
+                  part2 = part1 + (col2**2+col2)/2
+                  for k in xrange(j, n_zc):
+                      col3 = nz_cols[k]
+                      output_col = part2 + (col3**3 + 3*col3**2 + 2*col3)/6
+                      if output_col > max_out:
+                          max_out = output_col
+                      rows.append(rownum)
+                      cols.append(output_col + offset)
+                      data.append(nz_data[i] * nz_data[j] * nz_data[k])
+      
 if __name__ == '__main__':
     
     import scipy.sparse
