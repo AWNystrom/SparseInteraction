@@ -5,42 +5,7 @@ from scipy.misc import comb
 from scipy.sparse import csr_matrix, coo_matrix
 from code import interact
 
-"""
-For John:
-
-The new mappings don't contain D.
-Could you aso do first and second degrees to include the diagonal?
-
-
-"""
-
-"""
-1. Create the feature matrix, include the original matrix in it - the rest will start out all zeros.
-2. Iterate with as many nested loops as needed. This is the part that will have a different method for each degree.
-"""
-
-
-"""
-
-(0, 1) = 0
-(0, 2) = 1
-(1, 2) = 2
-(0, 3) = 3
-
-x 0 1 3
-x x 2 4
-x x x 5
-x x x x
-
-
-we want
-
-0 1 3 6
-x 2 4 7
-x x 5 8
-x x x 9
-
-"""
+#TODO add include_bias support
 
 class SparsePolynomialFeatures(TransformerMixin, BaseEstimator):
     def __init__(self, degree, interaction_only=False, include_bias=False):
