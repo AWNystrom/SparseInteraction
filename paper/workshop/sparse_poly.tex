@@ -1,0 +1,204 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2016_workshop,times}
+\usepackage{hyperref}
+\usepackage{url}
+
+
+\title{Efficient Calculation of Polynomial Features on Sparse Matrices}
+
+
+\author{Andrew Nystrom \\
+Savvysherpa Inc.\\
+6200 Shingle Creek Pkwy \\
+Suite 400 \\
+Minneapolis, MN 55430, USA \\
+\texttt{awnystrom@gmail.com} \\
+\And
+John Hughes \\
+Department of Computational Neuroscience \\
+University of the Witwatersrand \\
+Joburg, South Africa \\
+\texttt{\{robot,net\}@wits.ac.za} \\
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+We provide an algorithm for polynomial feature expansion that can operate directly on sparse a
+matrix of size $NxD$ with $\O(d^kD^kN)$ where $k$ is the polynomial order and $d$ is the density of each row.
+
+\end{abstract}
+
+\section{Introduction}
+
+Polynomial feature expansion is a tool long used in statistics for approximating nonlinear functions (see \cite{gergonne1974application, smith1918standard}).
+While their use has long been widespread, the authors are unaware of any improvements made to their calculation efficiency.
+In this work we provide an algorithm for calculating polynomial features for a matrix of size matrix of size $NxD$ with $O(d^kD^kN)$ where $k$ is the polynomial order and $d$ is the density of each row.
+The density of a matrix is the percent of its nonzero items, so $0 \le d \le 1$. The standard algorithm is $O(D^kN)$, so the added factor of $d^k$ represents a significant reduction in time.
+The algorithm does not require the densification of the matrix, e.i. the matrix remains in sparse form, so the space complexity is also $O(d^kD^kN)$ as opposed to $O(D^kN)$.
+
+\section{Algorithm}
+The standard method of calculating polynomial features for a vector $\vec{x}$ involves augmenting a feature for the product of each combination of features in $\vec{x}$ of orders 2 to $k$.
+This method does not exploit the sparsity of a sparse matrix and will yield a product of zero any time one of the features involved in the product is zero.
+In a sparse matrix, such products will be common, and since the default value of a sparse matrix is zero, these products are entirely unnecessary to compute.
+
+The main idea behind our algorithm is to only compute products that do not involve zeros.
+In a compressed sparse row matrix, the columns containing nonzero data are the only columns that are stored.
+We can therefore iterate over products of combinations of orders 2 to $k$ of these columns for each row to calculate $k$-degree polynomial features.
+
+While the idea is straightforward, there is yet one unaddressed caveat; 
+Given a set of nonzero columns whose product was just calculated to generate a polynomial feature, where in the polynomial matrix does the result of the product belong?
+To adress this, we derive a bijective mapping from the set of possible column index combinations of order 2 to $k$ onto the column index space of the polynomial feature matrix.
+More precisely, this the mapping is of the form $(i_1, i_1, ..., i_k) \arrow {} where i_1 \le i_1 \le ... \le i_k$.
+
+\subsection{Derivation of Mappings}
+
+\section{Analysis}
+\subsection{Analytical}
+\subsection{Empirical}
+\section{Conclusion}
+
+
+\section{Citations, figures, tables, references}
+\label{others}
+
+These instructions apply to everyone, regardless of the formatter being used.
+
+\subsection{Citations within the text}
+
+Citations within the text should be based on the {\tt natbib} package
+and include the authors' last names and year (with the ``et~al.'' construct
+for more than two authors). When the authors or the publication are
+included in the sentence, the citation should not be in parenthesis (as
+in ``See \citet{Hinton06} for more information.''). Otherwise, the citation
+should be in parenthesis (as in ``Deep learning shows promise to make progress towards AI~\citep{Bengio+chapter2007}.'').
+
+The corresponding references are to be listed in alphabetical order of
+authors, in the \textsc{References} section. As to the format of the
+references themselves, any style is acceptable as long as it is used
+consistently.
+
+\subsection{Footnotes}
+
+Indicate footnotes with a number\footnote{Sample of the first footnote} in the
+text. Place the footnotes at the bottom of the page on which they appear.
+Precede the footnote with a horizontal rule of 2~inches
+(12~picas).\footnote{Sample of the second footnote}
+
+\subsection{Figures}
+
+All artwork must be neat, clean, and legible. Lines should be dark
+enough for purposes of reproduction; art work should not be
+hand-drawn. The figure number and caption always appear after the
+figure. Place one line space before the figure caption, and one line
+space after the figure. The figure caption is lower case (except for
+first word and proper nouns); figures are numbered consecutively.
+
+Make sure the figure caption does not get separated from the figure.
+Leave sufficient space to avoid splitting the figure and figure caption.
+
+You may use color figures.
+However, it is best for the
+figure captions and the paper body to make sense if the paper is printed
+either in black/white or in color.
+\begin{figure}[h]
+\begin{center}
+%\framebox[4.0in]{$\;$}
+\fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+\end{center}
+\caption{Sample figure caption.}
+\end{figure}
+
+\subsection{Tables}
+
+All tables must be centered, neat, clean and legible. Do not use hand-drawn
+tables. The table number and title always appear before the table. See
+Table~\ref{sample-table}.
+
+Place one line space before the table title, one line space after the table
+title, and one line space after the table. The table title must be lower case
+(except for first word and proper nouns); tables are numbered consecutively.
+
+\begin{table}[t]
+\caption{Sample table title}
+\label{sample-table}
+\begin{center}
+\begin{tabular}{ll}
+\multicolumn{1}{c}{\bf PART}  &\multicolumn{1}{c}{\bf DESCRIPTION}
+\\ \hline \\
+Dendrite         &Input terminal \\
+Axon             &Output terminal \\
+Soma             &Cell body (contains cell nucleus) \\
+\end{tabular}
+\end{center}
+\end{table}
+
+\section{Final instructions}
+Do not change any aspects of the formatting parameters in the style files.
+In particular, do not modify the width or length of the rectangle the text
+should fit into, and do not change font sizes (except perhaps in the
+\textsc{References} section; see below). Please note that pages should be
+numbered.
+
+\section{Preparing PostScript or PDF files}
+
+Please prepare PostScript or PDF files with paper size ``US Letter'', and
+not, for example, ``A4''. The -t
+letter option on dvips will produce US Letter files.
+
+Consider directly generating PDF files using \verb+pdflatex+
+(especially if you are a MiKTeX user).
+PDF figures must be substituted for EPS figures, however.
+
+Otherwise, please generate your PostScript and PDF files with the following commands:
+\begin{verbatim}
+dvips mypaper.dvi -t letter -Ppdf -G0 -o mypaper.ps
+ps2pdf mypaper.ps mypaper.pdf
+\end{verbatim}
+
+\subsection{Margins in LaTeX}
+
+Most of the margin problems come from figures positioned by hand using
+\verb+\special+ or other commands. We suggest using the command
+\verb+\includegraphics+
+from the graphicx package. Always specify the figure width as a multiple of
+the line width as in the example below using .eps graphics
+\begin{verbatim}
+   \usepackage[dvips]{graphicx} ...
+   \includegraphics[width=0.8\linewidth]{myfile.eps}
+\end{verbatim}
+or % Apr 2009 addition
+\begin{verbatim}
+   \usepackage[pdftex]{graphicx} ...
+   \includegraphics[width=0.8\linewidth]{myfile.pdf}
+\end{verbatim}
+for .pdf graphics.
+See section 4.4 in the graphics bundle documentation (\url{http://www.ctan.org/tex-archive/macros/latex/required/graphics/grfguide.ps})
+
+A number of width problems arise when LaTeX cannot properly hyphenate a
+line. Please give LaTeX hyphenation hints using the \verb+\-+ command.
+
+
+\subsubsection*{Acknowledgments}
+
+Use unnumbered third level headings for the acknowledgments. All
+acknowledgments, including those to funding agencies, go at the end of the paper.
+
+\bibliography{sparse_poly}
+\bibliographystyle{iclr2016_workshop}
+
+\end{document}
