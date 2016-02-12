@@ -68,10 +68,10 @@ Given a set of nonzero columns whose product was just calculated to generate a p
 To adress this, we give a bijective mapping from the set of possible column index combinations of order 2 to $k$ onto the column index space of the polynomial feature matrix.
 More precisely, this the mapping is of the form 
 
-$(i_0, i_1, \dots, i_{k-1}) \mapsto {0,1,\dots, \binom{D}{k}}$ 
-$\forall i_0, i_1, \dots, i_{k-1} \mid 0 \le i_0 \le i_1 \le \dots \le i_{k-1} \le D$
-
-where $i_0,i_1,\dots i_{k-1}$ are column indicies.
+\begin{equation}
+(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}}) \mapsto p_{i_0i_1 \dots i_{k-1}} \in \{0,1,\dots, \binom{D}{k}\} 
+\forall (i_0, i_1, \dots, i_{k-1}) \mid 0 \le i_0 \le i_1 \le \dots \le i_{k-1} < D
+\end{equation}
 
 \subsection{Construction of Mappings}
 
