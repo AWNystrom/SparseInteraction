@@ -5,6 +5,7 @@
 
 \usepackage{amsmath}
 \usepackage{mathtools}
+\usepackage{amssymb}
 
 
 \title{Efficient Calculation of Polynomial Features on Sparse Matrices}
@@ -69,9 +70,10 @@ To adress this, we give a bijective mapping from the set of possible column inde
 More precisely, this the mapping is of the form 
 
 \begin{equation}
-(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}}) \mapsto p_{i_0i_1 \dots i_{k-1}} \in \{0,1,\dots, \binom{D}{k}\} 
-\forall (i_0, i_1, \dots, i_{k-1}) \mid 0 \le i_0 \le i_1 \le \dots \le i_{k-1} < D
+(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{i_0i_1 \dots i_{k-1}} \in \{0,1,\dots, \binom{D}{k}\} 
+\forall (i_0, i_1, \dots, i_{k-1})
 \end{equation}
+such that $ 0 \le i_0 \le i_1 \le \dots \le i_{k-1} < D$
 
 \subsection{Construction of Mappings}
 
