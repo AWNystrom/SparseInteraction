@@ -67,7 +67,7 @@ In a compressed sparse row matrix, the columns containing nonzero data are the o
 We can therefore iterate over products of combinations of orders 2 to $k$ of these columns for each row to calculate $k$-degree polynomial features.
 
 While the idea is straightforward, there is yet one unaddressed caveat.
-Given a set of nonzero columns whose corresponding components were multiplied to produce a polynomial feature, where in the augmented polynomial vector does the result of the product belong?
+Given a set of columns whose corresponding nonzero components were multiplied to produce a polynomial feature, where in the augmented polynomial vector does the result of the product belong?
 To adress this, we give a bijective mapping from the set of possible column index combinations of order 2 to $k$ onto the column index space of the polynomial feature matrix.
 More precisely, this the mapping is of the following form:
 
