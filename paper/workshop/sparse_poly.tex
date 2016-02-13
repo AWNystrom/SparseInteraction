@@ -54,7 +54,7 @@ While their use is widespread, the authors of this work are unaware of any impro
 In this work we provide an algorithm for calculating polynomial features for a row vector $\vec{x}$ of a $N \times D$ matrix with time and space complexity $O(d^kD^k)$ where $k$ is the polynomial order and $d$ is the density of $\vec{x}$.
 The density of a vector is the percent of elements that are nonzero, so $0 \le d \le 1$.
 The standard algorithm has time and space complexity $O(D^kN)$, so the added factor of $d^k$ represents a significant reduction in time.
-The algorithm does not require the densification of the matrix, e.i. the matrix remains in sparse form, so the space complexity is also $O(d^kD^kN)$ as opposed to $O(D^kN)$.
+The algorithm does not require the densification of the matrix, e.i. the matrix remains in sparse form, so the space complexity is also $O(d^kD^k)$ as opposed to $O(D^k)$.
 
 \section{Algorithm}
 The traditional method of calculating polynomial features for a vector $\vec{x}$ involves augmenting a feature for the product of each combination of features in $\vec{x}$ of orders 2 to $k$.
