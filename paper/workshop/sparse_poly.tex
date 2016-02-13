@@ -43,31 +43,33 @@ Joburg, South Africa \\
 
 \begin{abstract}
 We provide an algorithm for polynomial feature expansion that can operate directly on sparse a
-matrix of size $N \times D$ with $O(d^kD^kN)$ where $k$ is the polynomial order and $d$ is the density of each row.
+matrix. For a vector $\vec{x}$ of a $N \times D$ matrix, the algorithm has time and space complexity $O(d^kD^k)$ where $k$ is the polynomial order and $d$ is the density of $\vec{X}$.
 
 \end{abstract}
 
 \section{Introduction}
 
 Polynomial feature expansion is a tool long used in statistics for approximating nonlinear functions (see \cite{gergonne1974application, smith1918standard}).
-While their use has long been widespread, the authors are unaware of any improvements made to their calculation efficiency.
-In this work we provide an algorithm for calculating polynomial features for a matrix of size matrix of size $NxD$ with $O(d^kD^kN)$ where $k$ is the polynomial order and $d$ is the density of each row.
-The density of a matrix is the percent of its nonzero items, so $0 \le d \le 1$. The standard algorithm is $O(D^kN)$, so the added factor of $d^k$ represents a significant reduction in time.
+While their use is widespread, the authors of this work are unaware of any improvements made to their calculation efficiency.
+In this work we provide an algorithm for calculating polynomial features for a row vector $\vec{x}$ of a $N \times D$ matrix with time and space complexity $O(d^kD^k)$ where $k$ is the polynomial order and $d$ is the density of $\vec{x}$.
+The density of a vector is the percent of elements that are nonzero, so $0 \le d \le 1$.
+The standard algorithm has time and space complexity $O(D^kN)$, so the added factor of $d^k$ represents a significant reduction in time.
 The algorithm does not require the densification of the matrix, e.i. the matrix remains in sparse form, so the space complexity is also $O(d^kD^kN)$ as opposed to $O(D^kN)$.
 
 \section{Algorithm}
-The standard method of calculating polynomial features for a vector $\vec{x}$ involves augmenting a feature for the product of each combination of features in $\vec{x}$ of orders 2 to $k$.
+The traditional method of calculating polynomial features for a vector $\vec{x}$ involves augmenting a feature for the product of each combination of features in $\vec{x}$ of orders 2 to $k$.
 This method does not exploit the sparsity of a sparse matrix and will yield a product of zero any time one of the features involved in the product is zero.
-In a sparse matrix, such products will be common, and since the default value of a sparse matrix is zero, these products are entirely unnecessary to compute.
+In a sparse matrix, products resulting in zero will be common.
+Since the default value of a sparse matrix is zero, these products are entirely unnecessary to compute.
 
 The main idea behind our algorithm is to only compute products that do not involve zeros.
 In a compressed sparse row matrix, the columns containing nonzero data are the only columns that are stored.
 We can therefore iterate over products of combinations of orders 2 to $k$ of these columns for each row to calculate $k$-degree polynomial features.
 
-While the idea is straightforward, there is yet one unaddressed caveat; 
-Given a set of nonzero columns whose product was just calculated to generate a polynomial feature, where in the polynomial matrix does the result of the product belong?
+While the idea is straightforward, there is yet one unaddressed caveat.
+Given a set of nonzero columns whose corresponding components were multiplied to produce a polynomial feature, where in the augmented polynomial vector does the result of the product belong?
 To adress this, we give a bijective mapping from the set of possible column index combinations of order 2 to $k$ onto the column index space of the polynomial feature matrix.
-More precisely, this the mapping is of the form 
+More precisely, this the mapping is of the following form:
 
 \begin{equation}
 (x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{i_0i_1 \dots i_{k-1}} \in \{0,1,\dots, \binom{D}{k}\} 
