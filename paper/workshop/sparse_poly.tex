@@ -188,18 +188,12 @@ with analogous formulas for higher degree polynomial interactions.
 
 Calculating $k$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $dD$ choose $k$ (with repetition) products.
 The big O of the algorithm is therefore given by
-%\begin{align}
-%O\left(\binom{dD+k-1}{k}\right) & = O\left(\binom{dD+k-1}{dD-1}\right) 
-%& = O\left(\right) = O\left(\frac{(dD+k-1)!}{k!(dD-k)!}\right)
-%& = O\left(\frac{(dD+k-1)(dD+k-2) \dots (dD-k+1)}{k!}\right)
-%& = O\left((dD+k-1)(dD+k-2) \dots (dD-k+1)\right) \mbox{for} k << dD
-%& = O\left(\right)
-%
-%dD = 7
-%k = 3
-
-%(dD+k-1)(dD+k-2) \dots (dD-k+1) = (7+3-1)(7+3-2)(7+3-3) (7+3-4)(7+3-5)... (7-3+1=5)
-%\end{align}
+\begin{align}
+O\left(\binom{dD+k-1}{k}\right) & = O\left(\frac{(dD+k-1)!}{k!(dD-1)!}\right)\\
+& = O\left(\frac{(dD+k-1)(dD+k-2) \dots (dD)}{k!}\right)\\
+& = O\left((dD+k-1)(dD+k-2) \dots (dD)\right) \mbox{ for } k << dD\\
+& = O\left(d^kD^k\right)
+\end{align}
 
 \subsection{Empirical}
 \section{Conclusion}
