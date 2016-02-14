@@ -57,26 +57,28 @@ The standard algorithm has time and space complexity $O(D^kN)$, so the added fac
 The algorithm does not require the densification of the matrix, e.i. the matrix remains in sparse form, so the space complexity is also $O(d^kD^k)$ as opposed to $O(D^k)$.
 
 \section{Algorithm}
-The traditional method of calculating polynomial features for a vector $\vec{x}$ involves augmenting a feature for the product of each combination of features in $\vec{x}$ of orders 2 to $k$.
+The traditional method of calculating polynomial features for a vector $\vec{x}$ involves augmenting a feature for the product of each combination with repetition (without repetition for interaction features) of features in $\vec{x}$ of orders 2 to $k$.
 This method does not exploit the sparsity of a sparse matrix and will yield a product of zero any time one of the features involved in the product is zero.
 In a sparse matrix, products resulting in zero will be common.
 Since the default value of a sparse matrix is zero, these products are entirely unnecessary to compute.
 
 The main idea behind our algorithm is to only compute products that do not involve zeros.
 In a compressed sparse row matrix, the columns containing nonzero data are the only columns that are stored.
-We can therefore iterate over products of combinations of orders 2 to $k$ of these columns for each row to calculate $k$-degree polynomial features.
+We can therefore iterate over products of combinations with repetition of order $k$ of these columns for each row to calculate $k$-degree polynomial features.
 
 While the idea is straightforward, there is yet one unaddressed caveat.
 Given a set of columns whose corresponding nonzero components were multiplied to produce a polynomial feature, where in the augmented polynomial vector does the result of the product belong?
-To adress this, we give a bijective mapping from the set of possible column index combinations of order 2 to $k$ onto the column index space of the polynomial feature matrix.
+To adress this, we give a bijective mapping from the set of possible column index combinations with repetition of order $k$ onto the column index space of the polynomial feature matrix.
 More precisely, this the mapping is of the following form:
 
 \begin{equation}
-(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{i_0i_1 \dots i_{k-1}} \in \{0,1,\dots, \binom{D}{k}\} 
+(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{i_0i_1 \dots i_{k-1}} \in \{0,1,\dots, \left(\binom{D}{k}\right)\} 
 \forall (i_0, i_1, \dots, i_{k-1})
 \end{equation}
 such that $ 0 \le i_0 \le i_1 \le \dots \le i_{k-1} < D$
-where $(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}})$ are column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$.
+where $(x_{i_0}, x_{i_1}, \dots, x_{i_{k-1}})$ are column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$
+and $\left(\binom{D}{k}\right)$ is the number of combinations with repetition of size $k$ drawn from $D$ objects.
+In general, and is equal to $\left(\binom{n}{k}\right) = \binom{n+k-1}{n-1} = \binom{n+k-1}{k}$, as given by \cite{stanley1986enumerative}.
 
 \subsection{Construction of Mappings}
 
@@ -183,6 +185,22 @@ with analogous formulas for higher degree polynomial interactions.
 
 \section{Analysis}
 \subsection{Analytical}
+
+Calculating $k$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $dD$ choose $k$ (with repetition) products.
+The big O of the algorithm is therefore given by
+%\begin{align}
+%O\left(\binom{dD+k-1}{k}\right) & = O\left(\binom{dD+k-1}{dD-1}\right) 
+%& = O\left(\right) = O\left(\frac{(dD+k-1)!}{k!(dD-k)!}\right)
+%& = O\left(\frac{(dD+k-1)(dD+k-2) \dots (dD-k+1)}{k!}\right)
+%& = O\left((dD+k-1)(dD+k-2) \dots (dD-k+1)\right) \mbox{for} k << dD
+%& = O\left(\right)
+%
+%dD = 7
+%k = 3
+
+%(dD+k-1)(dD+k-2) \dots (dD-k+1) = (7+3-1)(7+3-2)(7+3-3) (7+3-4)(7+3-5)... (7-3+1=5)
+%\end{align}
+
 \subsection{Empirical}
 \section{Conclusion}
 
