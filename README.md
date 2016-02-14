@@ -1,2 +1,2 @@
 # SparseInteraction
-Generate second degree polynomial or interaction features on a sparse matrix with computational complexity quadratically decreasing with respect to the density of the matrix.
+Generate a k-order polynomial feature expansion for a vector of dimensionality D and density d in time and space O(d^kD^k).
