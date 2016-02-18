@@ -18,7 +18,7 @@ Suite 400 \\
 Minneapolis, MN 55430, USA \\
 \texttt{awnystrom@gmail.com} \\
 \And
-John Hughes \\
+John F. Hughes \\
 Department of Computer Science \\
 Brown University \\
 Providence, RI \\
@@ -81,7 +81,7 @@ where $(i_0, i_1, \dots, i_{k-1})$ are column indicies of a row vector $\vec{x}$
 
 \subsection{Construction of Mappings}
 
-We seek a map from matrix indices $(i, j)$ (with $i < j$ and $0 \le i < D$) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
+For the second degree case, we seek a map from matrix indices $(i, j)$ (with $i < j$ and $0 \le i < D$) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
 \begin{align}
 \begin{bmatrix}
 x & 0 & 1 & 3 \\
@@ -182,8 +182,8 @@ For the case where we include the diagonal in higher dimensions, we must shift $
 \end{align}
 with analogous formulas for higher degree polynomial interactions. 
 
-\section{Analysis}
-\subsection{Analytical}
+\section{Complexity Analysis}
+%\subsection{Analytical}
 
 Calculating $k$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $dD$ choose $k$ (with repetition) products.
 The big O of the algorithm is therefore given by
@@ -194,8 +194,8 @@ O\left(\binom{dD+k-1}{k}\right) & = O\left(\frac{(dD+k-1)!}{k!(dD-1)!}\right)\\
 & = O\left(d^kD^k\right)
 \end{align}
 
-\subsection{Empirical}
-\section{Conclusion}
+%\subsection{Empirical}
+%\section{Conclusion}
 
 
 \bibliography{sparse_poly}
