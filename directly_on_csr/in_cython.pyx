@@ -83,7 +83,12 @@ class SecDegPolyFeats(BaseEstimator, TransformerMixin):
       new_indptr[i+1] = new_indptr[i] + num_cols
       i += 1
   
-  
+    print 'new_indptr', new_indptr
+    print 'new_indices', new_indices
+    print 'new_data', new_data
+    
+    return csr_matrix((new_data, new_indices, new_indptr), shape=(X.shape[0], X.shape[1] + (X.shape[1]**2 + X.shape[1]) / 2))
+    
     A = csr_matrix([])
     A.data = new_data
     A.indices = new_indices
