@@ -1,0 +1,1 @@
+from sparse_interaction import SparsePolynomialFeatures
