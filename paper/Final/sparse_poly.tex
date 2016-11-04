@@ -4,6 +4,7 @@
 \usepackage{bm}
 \usepackage{clrscode3e}
 \usepackage{float}
+\usepackage{footmisc}
 \usepackage{mathtools}
 
 %icrl 2017
@@ -27,12 +28,19 @@
 %\texttt{jfh@cs.brown.edu} \\
 %}
 
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+\renewcommand{\thefootnote}{\fnsymbol{thanks}}
+
 \author{
   Nystrom, Andrew \\
-  \texttt{nystrom@google.com}
+  \texttt{awnystrom@gmail.com}
+  \thanks{Now at Google}
+  \ 
+  \thanks{The authors contributed equally important and fundamental aspects of this work.}
   \and
   Hughes, John \\
   \texttt{jfh@cs.brown.edu}
+  \footnotemark[2]
 }
 
 % The \author macro works with any number of authors. There are two commands
@@ -53,7 +61,7 @@
 
 \begin{abstract}
 We provide an algorithm for polynomial feature expansion that operates directly on and produces a compressed sparse row matrix without any densification.
-For a vector of dimension $D$, density $d$, and degree $k$ the algorithm has time and space complexity $O(d^kD^k)$ where $k$ is the polynomial order, which is an improvement by a factor $d^k$ over the standard method.
+For a vector of dimension $D$, density $d$, and degree $k$ the algorithm has time complexity $O(d^kD^k)$ where $k$ is the polynomial order, which is an improvement by a factor $d^k$ over the standard method.
 \end{abstract}
 
 \section{Introduction}
@@ -68,7 +76,7 @@ The algorithm leverages the CSR format to only compute products of features that
 This exploits the sparsity of the data to achieve an improved time complexity of $O(d^kD^k)$ on each vector of the matrix where $k$ is the degree of the expansion, $D$ is the dimensionality, and $d$ is the density.
 The standard algorithm has time complexity $O(D^k)$.
 Since $0 \le d \le 1$, our algorithm is a significant improvement.
-While the algorithm we lay out is uses CSR matrices, it could be slightly modified to operate on other sparse formats.
+While the algorithm we lay out uses CSR matrices, it could be modified to operate on other sparse formats.
 
 \section{Preliminaries}
 A matrix $\bm{A}$ is uppercase and bold.
@@ -84,7 +92,8 @@ This is not to be interpreted as an exponent, but to indicate that it is the ana
 For example, $\bm{c}^k$ is the vector that holds columns for nonzero values in $\bm{A}$'s polynomial feature expansion CSR representation.
 
 For simplicity, all polynomial expansions are assumed to be of the second degree.
-We do provide an algorithm for third degree expansions and derive the big O time complexity of the general case.
+We do provide an algorithm for third degree expansions, and derive the big O time complexity of the general case.
+We have also developed an algorithm for second and third degree interaction features (combinations without repetition), which can be found in the implementation.
 
 \section{Motivation}
 In this section, an algorithm for computing polynomial feature expansions on dense matrices will be given.
@@ -129,7 +138,7 @@ Instead of walking directly down rows of $bm{A}$, we will walk down sections of 
     \li     $i_{start} \gets \bm{p}_i$
     \li     $i_{stop} \gets \bm{p}_{i+1}$
     \li     $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
-    \li     $nnz^k_i \gets \binom{|\bm{c}_i|}{2}$
+    \li     $nnz^k_i \gets \binom{|\bm{c}_i|}{2}$ \label{li:row_nnz_count}
     \li     $nnz^k \gets nnz^k + nnz^k_i$
     \li     $\bm{p}^k_{i+1} \gets \bm{p}^k_i + nnz^k_i$
         \End
@@ -166,7 +175,7 @@ In order to achieve a general algorithm, we require a mapping from columns of $\
 If there are $D$ columns of $\bm{A}$ and $\binom{D}{k}$ columns of $\bm{A}^k$, this can be accomplished by a bijective mapping of the following form:
 
 \begin{equation}
-(j_0, j_1, \dots, j_{k-1}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{j_0j_1 \dots i_{k-1}} \in \{0,1,\dots,\binom{D}{k}\} 
+(j_0, j_1, \dots, j_{k-1}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{j_0j_1 \dots i_{k-1}} \in \{0,1,\dots,\binom{D}{k}-1\} 
 \end{equation}
 
 such that $ 0 \le j_0 \le j_1 \le \dots \le j_{k-1} < D$
@@ -225,7 +234,7 @@ h(i, j, k) &= 1 + (i-1) + \frac{(j-1)j}{2} + \\
 
 \section{Final CSR Expansion Algorithm}
 With the mapping from columns of $\bm{A}$ to a column of $\bm{A}^k$, we can now write the final form of the innermost loop of the algorithm from \ref{sec:final-algo}.
-Let the mapping for $k=2$ be denoted $PolyCol^2$.
+Let the mapping for $k=2$ be denoted $h^2$.
 Then the innermost loop becomes:
 
 \begin{codebox}
@@ -240,8 +249,8 @@ Then the innermost loop becomes:
                 \End
 \end{codebox}
 
-The algorithm can be generalized to higher degrees by simply adding more nested loops and using higher order mappings.
-
+The algorithm can be generalized to higher degrees by simply adding more nested loops, using higher order mappings, modifying the output dimensionality, and adjusting the counting of nonzero polynomial features in line \ref{li:row_nnz_count}.
+%For interaction features, the interaction mappings can be used in lieu of the polynomial mappings with the additional change of the output dimensionality and the number of nonzero features in each row (combinations without repetition instead of with).
 
 \section{Time Complexity}
 \subsection{Analytical}
@@ -260,13 +269,14 @@ To demonstrate how our algorithm scales with the density of a matrix, we compare
 Matrices of size $100 \times 5000$ were randomly generated with densities of $0.2$, $0.4$, $0.6$, $0.8$, and $1.0$.
 Thirty matrices of each density were randomly generated, and the mean times (gray) of each algorithm were plotted.
 The red or blue width around the mean marks the third standard deviation from the mean.
+The time to densify the input to the standard algorithm was not counted.
 
 The standard algorithm's runtime stays constant no matter the density of the matrix.
 This is because it does not avoid products that result in zero, but simply multiplies all second order combinations of features.
 Our algorithm scales quadratically with respect to the density.
 If the task were third degree expansions rather than second, the plot would show cubic scaling.
 
-The fact that our algorithm is approximately $6.5$ times faster than the scikit-learn algorithm on $100 \times 5000$ matrices that are entirely dense is likely an language implementation difference.
+The fact that our algorithm is approximately $6.5$ times faster than the scikit-learn algorithm on $100 \times 5000$ matrices that are entirely dense is likely a language implementation difference.
 What matters is that the time of our algorithm increases quadratically with respect to the density in accordance with the big O analysis.
 
 \begin{figure}[H]
@@ -279,7 +289,8 @@ What matters is that the time of our algorithm increases quadratically with resp
 
 \section{Conclusion}
 We have developed an algorithm for performing polynomial feature expansions on CSR matrices that scales polynomially with respect to the density of the matrix.
-While the areas within machine learning this work touches is not the flavor of the day, they are workhorses of industry and will likely save much coal from being unnecessarily burnt.
+While the areas within machine learning this work touches are not en vogue, they are workhorses of industry.
+This improvement could therefore spare the burning of much fossil fuel.
 
 \bibliography{sparse_poly}
 \bibliographystyle{iclr2017_conference}
