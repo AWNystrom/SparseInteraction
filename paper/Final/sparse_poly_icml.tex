@@ -118,33 +118,33 @@
 %\footnotetext{hi}
 
 \begin{abstract}
-We provide an algorithm for polynomial feature expansion that both operates on and produces a compressed sparse row matrix without any densification.
-For a vector of dimension $D$, density $d$, and degree $k$ the algorithm has time complexity $O(d^kD^k)$ where $k$ is the polynomial-feature order; this  is an improvement by a factor $d^k$ over the standard method.
+We provide an algorithm for polynomial feature expansion that both operates on and produces a compressed sparse row matrix with no densification.
+For a vector of dimension $D$ and density $0 \le d \le 1$ the algorithm has time complexity $O(d^kD^k)$ where $k$ is the polynomial-feature order; this  is an improvement by a factor $d^k$ over the standard method.
 \end{abstract}
 
 \section{Introduction}
 
-Feature mappings are an intra-instance transformation, usually referred to as $\phi(\vec{x})$, that map instance vectors to higher dimensional spaces in which they are more linearly separable, allowing linear models to capture non-linearities \cite{yuan2012recent}.
-A widely used feature mapping is the polynomial expansion, which generates a new feature for each product of all $k$-order combinations in the original feature space.
-A $k$-order polynomial expansion of the feature space allows a linear model to learn polynomial relationships between dependent and independant variables.
+Feature mappings are intra-instance transformations, usually denoted by $x \mapsto \phi(\vec{x})$, that map instance vectors to higher dimensional spaces in which they are more linearly separable, allowing linear models to capture non-linearities \cite{yuan2012recent}.
+A widely used feature mapping is \emph{polynomial expansion}, which produces a new feature for degree-$k$ monomial in the original features. (If the original features are $x,y,z$, the order-2 polynomial features are $xy, xz, xy$, and the order-3 ones are $x^2y, x^2z, xy^2, y^2 z, xz^2, yz^2,$ and $xyz$.)
+A $k$-order polynomial expansion of the feature space allows a linear model to learn polynomial relationships between dependent and independent variables.
 This mapping was first utilized in a published experiment by Joseph Diaz Gergonne in 1815 \cite{gergonne1974application, smith1918standard}.
 
 While other methods for capturing nonlinearities have been developed, such as kernels (the direct offspring of feature mappings), trees, generative models, and neural networks, feature mappings are still a popular tool \cite{barker200114, chang2010training, shaw2006intellectual}.
-The instance-independant nature of feature mappings allows them to pair well with linear parameter estimation techniques such as stochastic gradient descent, making them a candidate for certain types of large-scale machine learning problems when $D < N$.
+The instance-independent nature of feature mappings allows them to pair well with linear parameter estimation techniques such as stochastic gradient descent, making them a candidate for certain types of large-scale machine learning problems when $D < N$.
 
 The compressed sparse row (CSR) matrix format \cite(saad1994sparskit) is widely used \cite{liu2012sparse, bulucc2009parallel, bell2008efficient, white1997improving} and supported \cite{eigenweb, bastien2012theano, koenker2003sparsem}, and is considered the standard data structure for sparse, computationally heavy tasks.
 However, polynomial expansions cannot be performed directly on sparse CSR matrices, nor on any sparse matrix format, without intermediate densification steps.
-This densification not only adds extra overhead, but wastefully computes combinations of features that have a product of zero, which are then discarded during conversion into a sparse format.
+This densification not only adds overhead, but wastefully computes combinations of features that have a product of zero, which are then discarded during conversion into a sparse format.
 
-We provide an algorithm that allows CSR matrices to be the input of a polynomial feature expansion without any densification.
+We provide an algorithm that allows CSR matrices to be the input of a polynomial feature expansion with no densification.
 The algorithm leverages the CSR format to only compute products of features that result in nonzero values.
 This exploits the sparsity of the data to achieve an improved time complexity of $O(d^kD^k)$ on each vector of the matrix where $k$ is the degree of the expansion, $D$ is the dimensionality, and $d$ is the density.
 The standard algorithm has time complexity $O(D^k)$.
 Since $0 \le d \le 1$, our algorithm is a significant improvement.
-While the algorithm we describe uses CSR matrices, it could be modified to operate on other sparse formats.
+While the algorithm we describe uses CSR matrices, it can be readily adapted to other sparse formats.
 
 \section{Preliminaries}
-Matrices are denoted by uppercase bold letters thus: $\bm{A}$. 
+We denote matrices by uppercase bold letters thus: $\bm{A}$. 
 The $i$the row of $\bm{A}$ is written $\bm{a}_i$. All vectors are written in bold, and  $\bm{a}$, with no subscript, is a vector.
 
 A compressed sparse row (CSR) matrix representation of an $r$-row matrix $\bm{A}$ consists of three vectors: $\bm{c}$, $\bm{d}$, and $\bm{p}$ and a single number: the number of columns of $\bm{A}$. The vectors
@@ -154,11 +154,10 @@ the data describing nonzero columns of $\bm{a}_i$ are within the other two vecto
 Since only nonzero elements of each row are held, the overall number of columns of $\bm{A}$  must also be stored, since it cannot be derived
 from the other data.
 
-Scalars, vectors, and matrices are often referenced with the superscript $k$.
-This is not to be interpreted as an exponent, but to indicate that it is the analogous aspect of that which procedes it, but in its polynomial expansion form.
-For example, $\bm{c}^2$ is the vector that holds columns for nonzero values in $\bm{A}$'s quadratic feature expansion CSR representation.
+Scalars, vectors, and matrices are often decorated with a superscript $k$, which is not to be interpreted as an exponent, but instead as an indicator of polynomial expansion: 
+For example, if the CSR for $\bm{A}$ is $\bm{c}, \bm{d}, \bm{p}$, then $\bm{c}^2$ is the vector that holds columns for nonzero values in $\bm{A}$'s quadratic feature expansion CSR representation.
 
-For simplicity in the presentation, we work with polynomial expansions of degree 2, but continue to use the exponent $k$ to show how the ideas apply in the general case.
+To simplify the presentation, we work with polynomial expansions of degree 2, but continue to use the exponent $k$ to show how the ideas apply in the general case.
 
 We do provide an algorithm for third degree expansions, and derive the big-O time complexity of the general case.
 
@@ -166,12 +165,12 @@ We have also developed an algorithm for second and third degree interaction feat
 
 \section{Motivation}
 In this section, we present a strawman algorithm for computing polynomial feature expansions on dense matrices.
-We then modify the algorithm  slightly to operate on a CSR matrix, in order to expose its infeasibility in that context.
+We then modify the algorithm  slightly to operate on a CSR matrix, to expose its infeasibility in that context.
 We then show how the algorithm would be feasible with an added component, which we then derive in the following section.
 
 \subsection{Dense Expansion Algorithm}
 A natural way to calculate polynomial features for a matrix $\bm{A}$ is to walk down its rows and, for each row, take products of all $k$-combinations of elements.
-To determine in which column of $\bm{A}^k_i$ products of elements in $\bm{A}_i$ belong, a simple counter can be set to zero for each row of $\bm{A}$ and incremented efter each polynomial feature is generated.
+To determine in which column of $\bm{A}^k_i$ products of elements in $\bm{A}_i$ belong, a simple counter can be set to zero for each row of $\bm{A}$ and incremented after each polynomial feature is generated.
 This counter gives the column of $\bm{A}^k_i$ into which each expansion feature belongs.
 
 \begin{codebox}
@@ -198,7 +197,7 @@ Instead of walking directly down rows of $\bm{A}$, we will walk down sections of
 
 \begin{codebox}
 \footnotesize
-\Procname{$\proc{Incomplete Sparse Second Order ALgorithm}(\bm{A})$}
+\Procname{$\proc{Incomplete Sparse Second Order Algorithm}(\bm{A})$}
     \li $N \gets$ row count of $\bm{A}$
     \li $\bm{p}^k$ $\gets$ vector of size $N+1$
     \li $\bm{p}^k_0 \gets 0$
@@ -239,19 +238,20 @@ Given the arbitrary columns involved in a polynomial feature of $\bm{A}_i$, we n
 We cannot simply reset a counter for each row as we did in the dense algorithm,  because only columns corresponding to nonzero values are stored.
 Any time a column that would have held a zero value is implicitly skipped, the counter would err.
 
-To develop a general algorithm, we require a mapping from columns of $\bm{A}$ to a column of $\bm{A}^k$.
+To develop a general algorithm, we require a mapping from a list of $k$ columns of $\bm{A}$ to a column of $\bm{A}^k$.
 If there are $D$ columns of $\bm{A}$ and $\binom{D}{k}$ columns of $\bm{A}^k$, this can be accomplished by a bijective mapping of the following form:
 
 \begin{equation}
 (j_0, j_1, \dots, j_{k-1}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{j_0j_1 \dots i_{k-1}} \in \{0,1,\dots,\binom{D}{k}-1\} 
 \end{equation}
 
-such that $ 0 \le j_0 \le j_1 \le \dots \le j_{k-1} < D$
-where $(j_0, j_1, \dots, j_{k-1})$ are elements of $\bm{c}$ and $p_{j_0j_1 \dots i_{k-1}}$ is an element of $\bm{c}^k$. %column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix, and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$ where the product of elements corresponding to indices $i_0, i_1, \dots, i_{k-1}$ will be stored.
+where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{k-1} < D$, (ii) $(j_0, j_1, \dots, j_{k-1})$ are elements of $\bm{c}$ and (iii) $p_{j_0j_1 \dots i_{k-1}}$ is an element of $\bm{c}^k$. %column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix, and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$ where the product of elements corresponding to indices $i_0, i_1, \dots, i_{k-1}$ will be stored.
 
 \section{Construction of Mapping}
+\textbf{\color{red} This looks like the wrong mapping, since it uses $ i < j$ rather than $i \le j$, i.e., it's "interaction features" rather than polynomial features. Am I missing something? I've tried to rewrite a bit --jfh}
+
 Within this section, $i$, $j$, and $k$ denote column indices.
-For the second degree case, we seek a map from matrix indices $(i, j)$ (with $0 \le i < j < D$ ) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
+We start with the second degree case for \emph{interaction} features, because it's easiest to understand. We seek a map from matrix indices $(i, j)$ (with $0 \le i < j < D$ ) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
 \begin{align}
 \begin{bmatrix}
 x & 0 & 1 & 3 \\
@@ -338,6 +338,8 @@ Since $0 \le d \le 1$, the sparse algorithm scales polynomially with the degree 
 
 \subsection{Empirical}
 
+\section{Discussion}
+A natural question to ask is ``Why not just use a decent hashing algorithm?'' There are two answers. The first is that doing so does not avoid the \emph{computation} of features that contain a zero factor, and that alone prevents a reduction in big-O performance. The second is that hashing is great when you don't have a clear understanding of the distribution of items, but our index-computing function is simpler to compute than most hash functions, and provides perfect storage density. 
 
 \section{Conclusion}
 We have developed an algorithm for performing polynomial feature expansions on CSR matrices that scales polynomially with respect to the density of the matrix.
