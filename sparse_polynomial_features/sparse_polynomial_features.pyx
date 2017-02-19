@@ -9,13 +9,13 @@ cimport numpy as np
 
 
 ctypedef np.float64_t DATA_T
-ctypedef np.int32_t INDEX_T
+ctypedef np.int64_t INDEX_T
 
 __all__ = ['SparsePolynomialFeatures']
     
 def sec_deg_poly_feats(X):
     cdef np.ndarray[DATA_T, ndim=1] data = X.data
-    cdef np.ndarray[INDEX_T, ndim=1] indices = X.indices, indptr = X.indptr
+    cdef np.ndarray[np.int32_t, ndim=1] indices = X.indices, indptr = X.indptr
   
     #Count the number of nonzero items in each row
     cdef INDEX_T poly_nz_count = 0, i = 0, D
@@ -27,8 +27,8 @@ def sec_deg_poly_feats(X):
   
     #Make the arrays that will form the new CSR matrix
     cdef np.ndarray[DATA_T, ndim=1] new_data = np.ndarray(shape=poly_nz_count, dtype=np.float64, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int32, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int32, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int64, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int64, order='C')
   
     new_indptr[0] = 0
     cdef INDEX_T ind = 0, start, stop, num_cols, k1, k2, col2, original_D = X.shape[1]
@@ -77,7 +77,7 @@ def sec_deg_poly_feats(X):
 
 def sec_deg_inter_feats(X):
     cdef np.ndarray[DATA_T, ndim=1] data = X.data
-    cdef np.ndarray[INDEX_T, ndim=1] indices = X.indices, indptr = X.indptr
+    cdef np.ndarray[np.int32_t, ndim=1] indices = X.indices, indptr = X.indptr
   
     #Count the number of nonzero items in each row
     cdef INDEX_T poly_nz_count = 0, i = 0, D
@@ -89,8 +89,8 @@ def sec_deg_inter_feats(X):
   
     #Make the arrays that will form the new CSR matrix
     cdef np.ndarray[DATA_T, ndim=1] new_data = np.ndarray(shape=poly_nz_count, dtype=np.float64, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int32, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int32, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int64, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int64, order='C')
   
     new_indptr[0] = 0
     cdef INDEX_T ind = 0, start, stop, num_cols, k1, k2, col2, original_D = X.shape[1]
@@ -140,7 +140,7 @@ def sec_deg_inter_feats(X):
 
 def third_deg_poly_feats(X):
     cdef np.ndarray[DATA_T, ndim=1] data = X.data
-    cdef np.ndarray[INDEX_T, ndim=1] indices = X.indices, indptr = X.indptr
+    cdef np.ndarray[np.int32_t, ndim=1] indices = X.indices, indptr = X.indptr
   
     #Count the number of nonzero items in each row
     cdef INDEX_T poly_nz_count = 0, i = 0, D
@@ -152,8 +152,8 @@ def third_deg_poly_feats(X):
   
     #Make the arrays that will form the new CSR matrix
     cdef np.ndarray[DATA_T, ndim=1] new_data = np.ndarray(shape=poly_nz_count, dtype=np.float64, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int32, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int32, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int64, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int64, order='C')
   
     new_indptr[0] = 0
     cdef INDEX_T ind = 0, start, stop, num_cols, k1, k2, k3, col2, col3, original_D = X.shape[1], second_order_D
@@ -227,7 +227,7 @@ def third_deg_poly_feats(X):
 
 def third_deg_inter_feats(X):
     cdef np.ndarray[DATA_T, ndim=1] data = X.data
-    cdef np.ndarray[INDEX_T, ndim=1] indices = X.indices, indptr = X.indptr
+    cdef np.ndarray[np.int32_t, ndim=1] indices = X.indices, indptr = X.indptr
   
     #Count the number of nonzero items in each row
     cdef INDEX_T poly_nz_count = 0, i = 0, D
@@ -239,8 +239,8 @@ def third_deg_inter_feats(X):
   
     #Make the arrays that will form the new CSR matrix
     cdef np.ndarray[DATA_T, ndim=1] new_data = np.ndarray(shape=poly_nz_count, dtype=np.float64, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int32, order='C')
-    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int32, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indices = np.ndarray(shape=poly_nz_count, dtype=np.int64, order='C')
+    cdef np.ndarray[INDEX_T, ndim=1] new_indptr = np.ndarray(shape=indptr.shape[0], dtype=np.int64, order='C')
   
     new_indptr[0] = 0
     cdef INDEX_T ind = 0, start, stop, num_cols, k1, k2, k3, col2, col3, original_D = X.shape[1], second_order_D

@@ -8,7 +8,7 @@ cimport numpy as np
 
 
 ctypedef np.float64_t DATA_T
-ctypedef np.int32_t INDEX_T
+ctypedef np.int64_t INDEX_T
 
 __all__ = ['DensePolynomialFeatures']
 
