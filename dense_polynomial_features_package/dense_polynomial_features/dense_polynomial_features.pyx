@@ -33,59 +33,61 @@ class DensePolynomialFeatures(BaseEstimator, TransformerMixin):
     cdef INDEX_T degree = <INDEX_T>(self.degree)
     cdef INDEX_T N = X.shape[0]
     cdef INDEX_T D = X.shape[1]
-    cdef INDEX_T i, j, row, poly_index
+    cdef INDEX_T i, j, row, poly_index, row_offset
     cdef poly_D = D + <INDEX_T>((D**2+D)/2)
-    cdef np.ndarray[DATA_T, ndim=2] poly_X = np.ndarray(shape=(N, poly_D), dtype=np.float64, order='C')
+    cdef np.ndarray[DATA_T, ndim=1] flat_poly_X = np.ndarray(shape=(N*poly_D, ), dtype=np.float64, order='C')
     cdef DATA_T data1
     
     row = 0
     while row < N:
       poly_index = 0
       i = 0
+      row_offset = row * poly_D
       while i < D:
         data1 = X[row, i]
-        poly_X[row, poly_index] = data1
+        flat_poly_X[row_offset + poly_index] = data1
         poly_index += 1
         j = 0
         while j <= i:
-          poly_X[row, poly_index] = data1 * X[row, j]
+          flat_poly_X[row_offset + poly_index] = data1 * X[row, j]
           poly_index += 1
           j += 1
         i += 1
       row += 1
       
-    return poly_X
+    #return flat_poly_X.reshape((N, poly_D))
   
   def transform3(self, X_):
     cdef np.ndarray[DATA_T, ndim=2] X = X_
     cdef INDEX_T degree = <INDEX_T>(self.degree)
     cdef INDEX_T N = X.shape[0]
     cdef INDEX_T D = X.shape[1]
-    cdef INDEX_T i, j, k, row, poly_index
+    cdef INDEX_T i, j, k, row, poly_index, row_offset
     cdef poly_D = D + <INDEX_T>((D**2+D)/2) + <INDEX_T>((D**3+3*D**2+2*D)/6)
-    cdef np.ndarray[DATA_T, ndim=2] poly_X = np.ndarray(shape=(N, poly_D), dtype=np.float64, order='C')
+    cdef np.ndarray[DATA_T, ndim=1] flat_poly_X = np.ndarray(shape=(N*poly_D, ), dtype=np.float64, order='C')
     cdef DATA_T data1, data2
     
     row = 0
     while row < N:
       poly_index = 0
       i = 0
+      row_offset = row*poly_D
       while i < D:
         data1 = X[row, i]
-        poly_X[row, poly_index] = data1
+        flat_poly_X[row_offset + poly_index] = data1
         poly_index += 1
         j = 0
         while j <= i:
           data2 = X[row, j]
-          poly_X[row, poly_index] = data1 * data2
+          flat_poly_X[row_offset + poly_index] = data1 * data2
           poly_index += 1
           k = 0
           while k <= j:
-            poly_X[row, poly_index] = data1 * data2 * X[row, k]
+            flat_poly_X[row_offset + poly_index] = data1 * data2 * X[row, k]
             poly_index += 1
             k += 1
           j += 1
         i += 1
       row += 1
       
-    return poly_X
+    #return flat_poly_X.reshape((N, poly_D))

@@ -73,7 +73,7 @@ def sec_deg_poly_feats(X):
     A.indices = new_indices
     A.indptr = new_indptr
     A._shape = (X.shape[0], X.shape[1] + <INDEX_T>((X.shape[1]**2 + X.shape[1]) / 2))
-    return A
+    #return A
 
 def sec_deg_inter_feats(X):
     cdef np.ndarray[DATA_T, ndim=1] data = X.data
@@ -135,7 +135,7 @@ def sec_deg_inter_feats(X):
     A.indices = new_indices
     A.indptr = new_indptr
     A._shape = (X.shape[0], X.shape[1] + <INDEX_T>((X.shape[1]**2 - X.shape[1]) / 2))
-    return A
+    #return A
 
 
 def third_deg_poly_feats(X):
@@ -223,7 +223,7 @@ def third_deg_poly_feats(X):
     A.indptr = new_indptr
     D = X.shape[1]
     A._shape = (X.shape[0], D + <INDEX_T>((D**2 + D) / 2) + <INDEX_T>((D**3 + 3*D**2 + 2*D)/6))
-    return A
+    #return A
 
 def third_deg_inter_feats(X):
     cdef np.ndarray[DATA_T, ndim=1] data = X.data
@@ -310,7 +310,7 @@ def third_deg_inter_feats(X):
     A.indptr = new_indptr
     D = X.shape[1]
     A._shape = (X.shape[0], D + <INDEX_T>((D**2 - D) / 2) + <INDEX_T>((D**3 - 3*D**2 + 2*D)/6))
-    return A
+    #return A
 
 params_to_funct = {(2, False): sec_deg_poly_feats, 
                    (2, True): sec_deg_inter_feats,
