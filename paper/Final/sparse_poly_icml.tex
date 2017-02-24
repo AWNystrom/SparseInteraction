@@ -23,7 +23,6 @@
 
 \usepackage{amssymb}
 \usepackage{bm}
-\usepackage{clrscode3e}
 \usepackage{float}
 \usepackage{footmisc}
 \usepackage{mathtools}
@@ -119,7 +118,7 @@
 
 \begin{abstract}
 We provide an algorithm for polynomial feature expansion that both operates on and produces a compressed sparse row matrix with no densification.
-For a vector of dimension $D$ and density $0 \le d \le 1$ the algorithm has time complexity $O(d^kD^k)$ where $k$ is the polynomial-feature order; this  is an improvement by a factor $d^k$ over the standard method.
+For a vector of dimension $D$ and density $0 \le d \le 1$ the algorithm has time complexity $\Theta(d^kD^k)$ where $k$ is the polynomial-feature order; this  is an improvement by a factor $d^k$ over the standard method.
 \end{abstract}
 
 \section{Introduction}
@@ -130,22 +129,22 @@ A $k$-order polynomial expansion of the feature space allows a linear model to l
 This mapping was first utilized in a published experiment by Joseph Diaz Gergonne in 1815 \cite{gergonne1974application, smith1918standard}.
 
 While other methods for capturing nonlinearities have been developed, such as kernels (the direct offspring of feature mappings), trees, generative models, and neural networks, feature mappings are still a popular tool \cite{barker200114, chang2010training, shaw2006intellectual}.
-The instance-independent nature of feature mappings allows them to pair well with linear parameter estimation techniques such as stochastic gradient descent, making them a candidate for certain types of large-scale machine learning problems when $D < N$.
+The instance-independent nature of feature mappings allows them to pair well with linear parameter estimation techniques such as stochastic gradient descent, making them a candidate for certain types of large-scale machine learning problems when $D \ll N$.
 
-The compressed sparse row (CSR) matrix format \cite(saad1994sparskit) is widely used \cite{liu2012sparse, bulucc2009parallel, bell2008efficient, white1997improving} and supported \cite{eigenweb, bastien2012theano, koenker2003sparsem}, and is considered the standard data structure for sparse, computationally heavy tasks.
+The compressed sparse row (CSR) matrix format \cite{saad1994sparskit} is widely used \cite{liu2012sparse, bulucc2009parallel, bell2008efficient, white1997improving} and supported \cite{eigenweb, bastien2012theano, scikit-learn, koenker2003sparsem}, and is considered the standard data structure for sparse, computationally heavy tasks.
 However, polynomial expansions cannot be performed directly on sparse CSR matrices, nor on any sparse matrix format, without intermediate densification steps.
 This densification not only adds overhead, but wastefully computes combinations of features that have a product of zero, which are then discarded during conversion into a sparse format.
 
 We provide an algorithm that allows CSR matrices to be the input of a polynomial feature expansion with no densification.
 The algorithm leverages the CSR format to only compute products of features that result in nonzero values.
-This exploits the sparsity of the data to achieve an improved time complexity of $O(d^kD^k)$ on each vector of the matrix where $k$ is the degree of the expansion, $D$ is the dimensionality, and $d$ is the density.
-The standard algorithm has time complexity $O(D^k)$.
+This exploits the sparsity of the data to achieve an improved time complexity of $\Theta(d^kD^k)$ on each vector of the matrix where $k$ is the degree of the expansion, $D$ is the dimensionality, and $d$ is the density.
+The standard algorithm has time complexity $\Theta(D^k)$.
 Since $0 \le d \le 1$, our algorithm is a significant improvement.
 While the algorithm we describe uses CSR matrices, it can be readily adapted to other sparse formats.
 
 \section{Preliminaries}
 We denote matrices by uppercase bold letters thus: $\bm{A}$. 
-The $i$the row of $\bm{A}$ is written $\bm{a}_i$. All vectors are written in bold, and  $\bm{a}$, with no subscript, is a vector.
+The $i^{th}$ the row of $\bm{A}$ is written $\bm{a}_i$. All vectors are written in bold, and  $\bm{a}$, with no subscript, is a vector. Non-bold letters are scalars. 
 
 A compressed sparse row (CSR) matrix representation of an $r$-row matrix $\bm{A}$ consists of three vectors: $\bm{c}$, $\bm{d}$, and $\bm{p}$ and a single number: the number of columns of $\bm{A}$. The vectors
 $\bm{c}$ and $\bm{d}$ contain the same number of elements, and hold the column indices and data values, respectively, of all nonzero elements of $\bm{A}$.
@@ -168,72 +167,78 @@ In this section, we present a strawman algorithm for computing polynomial featur
 We then modify the algorithm  slightly to operate on a CSR matrix, to expose its infeasibility in that context.
 We then show how the algorithm would be feasible with an added component, which we then derive in the following section.
 
+It should be noted that in practice, as well as in our code and experiments, expansions for degrees $1, 2, \dots, k-1$ are also generated.
+The final design matrix is the augmentation of all such expansions.
+However, the algorithm descriptions in this paper omit these steps as they would become unnecessarily visually cumbersome.
+Extending them to include all degrees less than $k$ is trivial and does not affect the complexity of the algorithm as the terms that involve $k$ dominate.
+
 \subsection{Dense Expansion Algorithm}
 A natural way to calculate polynomial features for a matrix $\bm{A}$ is to walk down its rows and, for each row, take products of all $k$-combinations of elements.
 To determine in which column of $\bm{A}^k_i$ products of elements in $\bm{A}_i$ belong, a simple counter can be set to zero for each row of $\bm{A}$ and incremented after each polynomial feature is generated.
 This counter gives the column of $\bm{A}^k_i$ into which each expansion feature belongs.
 
-\begin{codebox}
-\footnotesize
-\Procname{$\proc{Dense Second Order Algorithm}(\bm{A})$}
-    \li $N \gets$ row count of $\bm{A}$
-    \li $D \gets$ column count of $\bm{A}$
-    \li $\bm{A}^k$ $\gets$ empty $N \times \binom{D}{2}$ matrix
-    \li \For $i \gets 0 \To N-1$ \Do
-    \li     $c_p \gets 0$
-    \li     \For $j_1 \gets 0 \To D-1$ \Do
-    \li         \For $j_2 \gets j_1 \To D-1$ \Do
-    \li             $\bm{A}^k_{i{c_p}} \gets \bm{A}_{ij_1} \cdot \bm{A}_{ij_2}$
-    \li             $c_p \gets c_p + 1$
-                \End
-            \End
-       	\End
-\end{codebox}
+\begin{algorithm}[H]
+   \caption{Dense Second Order Polynomial Expansion}
+   \label{alg:Dense-Second-Order-Polynomial-Expansion}
+\begin{algorithmic}[1]
+   \STATE {\bfseries Input:} data $\bm{A}$, size $N \times D$
+   \STATE $\bm{A}^k$ $\gets$ empty $N \times \binom{D}{2}$ matrix
+   \FOR{$i \gets 0$ {\bfseries to} $N-1$}
+      \STATE $c_p \gets 0$
+      \FOR{$j_1 \gets 0$ {\bfseries to} $D-1$}
+          \FOR{$j_2 \gets j_1$ {\bfseries to} $D-1$}
+              \STATE $\bm{A}^k_{i{c_p}} \gets \bm{A}_{ij_1} \cdot \bm{A}_{ij_2}$
+              \STATE $c_p \gets c_p + 1$
+          \ENDFOR
+      \ENDFOR
+   \ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Imperfect CSR Expansion Algorithm}
 \label{sec:final-algo}
 Now consider how this algorithm might be modified to accept a CSR matrix.
 Instead of walking directly down rows of $\bm{A}$, we will walk down sections of $\bm{c}$ and $\bm{d}$ partitioned by $\bm{p}$, and instead of inserting polynomial features into $\bm{A}^k$, we will insert column numbers into $\bm{c}^k$ and data elements into $\bm{d}^k$.
 
-\begin{codebox}
-\footnotesize
-\Procname{$\proc{Incomplete Sparse Second Order Algorithm}(\bm{A})$}
-    \li $N \gets$ row count of $\bm{A}$
-    \li $\bm{p}^k$ $\gets$ vector of size $N+1$
-    \li $\bm{p}^k_0 \gets 0$
-    \li $nnz^k \gets 0$
-    \li \For $i \gets 0 \To N-1$ \Do
-    \li     $i_{start} \gets \bm{p}_i$
-    \li     $i_{stop} \gets \bm{p}_{i+1}$
-    \li     $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
-    \li     $nnz^k_i \gets \binom{|\bm{c}_i|}{2}$ \label{li:row_nnz_count}
-    \li     $nnz^k \gets nnz^k + nnz^k_i$
-    \li     $\bm{p}^k_{i+1} \gets \bm{p}^k_i + nnz^k_i$
-        \End
-    \zi     
-    \zi \Comment Build up the elements of $\bm{p}^k$, $\bm{c}^k$, and $\bm{d}^k$
-    \li $\bm{p}^k$ $\gets$ vector of size $N+1$
-    \li $\bm{c}^k$ $\gets$ vector of size $nnz^k$
-    \li $\bm{d}^k$ $\gets$ vector of size $nnz^k$
-    \li $n \gets 0$
-    \li \For $i \gets 0 \To N-1$ \Do
-    \li     $i_{start} \gets \bm{p}_i$
-    \li     $i_{stop} \gets \bm{p}_{i+1}$
-    \li     $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
-    \li     $\bm{d}_i \gets \bm{d}_{i_{start}:i_{stop}}$
-    \li     \For $c_1 \gets 0 \To |\bm{c}_i|-1$ \Do
-    \li         \For $c_2 \gets c_1 \To |\bm{c}_i|-1$ \Do
-%    \li             $j_0 \gets \bm{c}_{c_0}$
-%    \li             $j_1 \gets \bm{c}_{c_1}$
-    \li             $\bm{d}^k_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
-    \li             $\bm{c}^k_{n} = ?$ \label{li:set_ck}
-    \li             $n \gets n + 1$
-                \End
-            \End
-       	\End
-\end{codebox}
+\begin{algorithm}[H]
+   \caption{Incomplete Sparse Second Order Polynomial Expansion}
+   \label{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}
+\begin{algorithmic}[1]
+   \STATE {\bfseries Input:} data $\bm{A}$, size $N \times D$
+   \STATE $\bm{p}^k$ $\gets$ vector of size $N+1$
+   \STATE $\bm{p}^k_0 \gets 0$
+   \STATE $nnz^k \gets 0$
+   \FOR{$i \gets 0$ {\bfseries to} $N-1$}
+      \STATE $i_{start} \gets \bm{p}_i$
+      \STATE $i_{stop} \gets \bm{p}_{i+1}$
+      \STATE $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
+      \STATE $nnz^k_i \gets \binom{|\bm{c}_i|}{2}$ \label{li:row_nnz_count}
+      \STATE $nnz^k \gets nnz^k + nnz^k_i$
+      \STATE $\bm{p}^k_{i+1} \gets \bm{p}^k_i + nnz^k_i$
+  \ENDFOR
+  
+  \STATE $\bm{p}^k$ $\gets$ vector of size $N+1$
+  \STATE $\bm{c}^k$ $\gets$ vector of size $nnz^k$
+  \STATE $\bm{d}^k$ $\gets$ vector of size $nnz^k$
+  \STATE $n \gets 0$
+  
+  \FOR {$i \gets 0$ {\bfseries to} $N-1$}
+      \STATE $i_{start} \gets \bm{p}_i$
+      \STATE $i_{stop} \gets \bm{p}_{i+1}$
+      \STATE $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
+      \STATE $\bm{d}_i \gets \bm{d}_{i_{start}:i_{stop}}$
+      \FOR {$c_1 \gets 0$ {\bfseries to} $|\bm{c}_i|-1$}
+          \FOR {$c_2 \gets c_1$ {\bfseries to} $|\bm{c}_i|-1$}
+              \STATE $\bm{d}^k_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
+              \STATE $\bm{c}^k_{n} = ?$ \label{li:set_ck}
+              \STATE $n \gets n + 1$
+          \ENDFOR
+      \ENDFOR
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
-The crux of the problem is at line \ref{li:set_ck}.
+The crux of the problem is at line 25. %reference wasn't working \ref{li:set_ck}.
 Given the arbitrary columns involved in a polynomial feature of $\bm{A}_i$, we need to determine the corresponding column of $\bm{A}^k_i$.
 We cannot simply reset a counter for each row as we did in the dense algorithm,  because only columns corresponding to nonzero values are stored.
 Any time a column that would have held a zero value is implicitly skipped, the counter would err.
@@ -248,10 +253,10 @@ If there are $D$ columns of $\bm{A}$ and $\binom{D}{k}$ columns of $\bm{A}^k$, t
 where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{k-1} < D$, (ii) $(j_0, j_1, \dots, j_{k-1})$ are elements of $\bm{c}$ and (iii) $p_{j_0j_1 \dots i_{k-1}}$ is an element of $\bm{c}^k$. %column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix, and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$ where the product of elements corresponding to indices $i_0, i_1, \dots, i_{k-1}$ will be stored.
 
 \section{Construction of Mapping}
-\textbf{\color{red} This looks like the wrong mapping, since it uses $ i < j$ rather than $i \le j$, i.e., it's "interaction features" rather than polynomial features. Am I missing something? I've tried to rewrite a bit --jfh}
+%\textbf{\color{red} This looks like the wrong mapping, since it uses $ i < j$ rather than $i \le j$, i.e., it's "interaction features" rather than polynomial features. Am I missing something? I've tried to rewrite a bit --jfh}
 
 Within this section, $i$, $j$, and $k$ denote column indices.
-We start with the second degree case for \emph{interaction} features, because it's easiest to understand. We seek a map from matrix indices $(i, j)$ (with $0 \le i < j < D$ ) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$, one that follows the pattern indicated by 
+We start with the second degree case for \emph{interaction} features due to its relative simplicity as it is easiest to understand. We seek a map from matrix indices $(i, j)$ (with $0 \le i < j < D$ ) to numbers $f(i, j)$ with $0 \le f(i, j) < \frac{D(D-1)}{2}$ that follows the pattern indicated by 
 \begin{align}
 \begin{bmatrix}
 x & 0 & 1 & 3 \\
@@ -277,7 +282,7 @@ For \emph{polynomial} features, we seek a similar map $g$, one that also handles
 $ g(i, j) = i + T_2(j) = \frac{1}{2} (2i + j^2 + j + 1).$
 
 
-To handle \emph{three-way interactions}, we need to map triples of indices in a 3-index array to a flat list, and similarly for higher-order interactions. For this, we'll need the tetrahedral numbers $T_3(n) = \sum_{i=1}^n T_{2}(n) = 
+To handle \emph{three-way interactions}, we need to map triples of indices in a 3-index array to a flat list, and similarly for higher-order interactions. For this, we require the tetrahedral numbers $T_3(n) = \sum_{i=1}^n T_{2}(n) = 
 \frac{1}{6}(n^3 + 3n^2 + 2n)$.
 
 For three indices, $i,j,k$, with $0 \le i < j < k < D$, we have a similar recurrence. Calling the mapping $h$, we have 
@@ -305,46 +310,93 @@ With the mapping from columns of $\bm{A}$ to a column of $\bm{A}^k$, we can now 
 Let the mapping for $k=2$ be denoted $h^2$.
 Then the innermost loop becomes:
 
-\begin{codebox}
-\footnotesize
-    \zi         \For $c_2 \gets c_1 \To |\bm{c}_i|-1$ \Do
-    \zi             $j_0 \gets \bm{c}_{c_0}$
-    \zi             $j_1 \gets \bm{c}_{c_1}$
-    \zi             $c_p \gets h^2(j_0, j_1)$
-    \zi             $\bm{d}^k_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
-    \zi             $\bm{c}^k_{n} = c_p$
-    \zi             $n \gets n + 1$
-                \End
-\end{codebox}
+\begin{algorithm}[H]
+   \caption{Inner Loop of Completed Sparse Second Order Polynomial Expansion}
+   \label{alg:Inner-Loop-of-Completed-Sparse-Second-Order-Polynomial-Expansion}
+\begin{algorithmic}[1]
+  \FOR {$c_2 \gets c_1$ {\bfseries to} $|\bm{c}_i|-1$}
+      \STATE $j_0 \gets \bm{c}_{c_0}$
+      \STATE $j_1 \gets \bm{c}_{c_1}$
+      \STATE $c_p \gets h^2(j_0, j_1)$
+      \STATE $\bm{d}^k_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
+      \STATE $\bm{c}^k_{n} = c_p$
+      \STATE $n \gets n + 1$
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
 The algorithm can be generalized to higher degrees by simply adding more nested loops, using higher order mappings, modifying the output dimensionality, and adjusting the counting of nonzero polynomial features in line \ref{li:row_nnz_count}.
 %For interaction features, the interaction mappings can be used in lieu of the polynomial mappings with the additional change of the output dimensionality and the number of nonzero features in each row (combinations without repetition instead of with).
 
 \section{Time Complexity}
 \subsection{Analytical}
+\label{sec:analytical}
 
 Calculating $k$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $\binom{dD}{k}$ (with repetition) products.
 The complexity of the algorithm, for fixed $k \ll dD$, is therefore
 \begin{align}
-& O\left(\binom{dD+k-1}{k}\right) = O\left(\frac{(dD+k-1)!}{k!(dD-1)!}\right)\\
-& = O\left(\frac{(dD+k-1)(dD+k-2) \dots (dD)}{k!}\right)\\
-& = O\left((dD+k-1)(dD+k-2) \dots (dD)\right)\\
-& = O\left(d^kD^k\right)
+& \Theta\left(\binom{dD+k-1}{k}\right) = \Theta\left(\frac{(dD+k-1)!}{k!(dD-1)!}\right)\\
+& = \Theta\left(\frac{(dD+k-1)(dD+k-2) \dots (dD)}{k!}\right)\\
+& = \Theta\left((dD+k-1)(dD+k-2) \dots (dD)\right)\\
+& = \Theta\left(d^kD^k\right)
 \end{align}
 
-For a matrix of size $N \times D$, the complexity is therefore $O\left(Nd^kD^k\right)$.
-The dense algorithm does not leverage sparsity, and its complexity is $O\left(ND^k\right)$.
+For a matrix of size $N \times D$, the complexity is therefore $\Theta\left(Nd^kD^k\right)$.
+The dense algorithm does not leverage sparsity, and its complexity is $\Theta\left(ND^k\right)$.
 Since $0 \le d \le 1$, the sparse algorithm scales polynomially with the degree of the polynomial expansion.
 
+\newpage
+
 \subsection{Empirical}
+To verify the average time complexity of our algorithm, we implemented both the sparse version and the baseline in the Cython programming language so that results would be directly comparable.
+We sought the relationships between runtime and the instance count ($N$), the instance dimensionality ($D$), and the instance density ($d$).
+
+To find these relationships, we individually varied $N$, $D$, and $d$ while holding the remaining two constant.
+For each of these configurations, we generated $20$ matrices and took the average time to reduce variance.
+The time to densify did not count against the dense algorithm.
+Figure-\ref{fig:all-vs-time} summarizes our findings.
+
+Varying the density ($d$) (column 1) shows that our algorithm scales polynomially with $d$, but that the baseline is unaffected by it.
+Both algorithms increase polynomially with the dimensionality ($D$), but ours at a significantly reduced rate.
+Likewise, both algorithms scale linearly with the instance count ($N$), but ours to a much lesser degree.
+
+Note that the point at which the sparse and dense algorithms intersect when varying $d$ is to the right of $0.5$, which is when a matrix technically becomes sparse.
+The point at which this happens will depend on $D$, but this shows that our algorithm is useful even for some dense matrices.
+
+\begin{figure*}[ht!]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\textwidth]{all_vs_time.png}}
+\caption{
+%This figure shows how the runtimes of the sparse and dense %algorithms scale with $d$, $D$, and $N$.
+%Each point is the average of 20 samples.
+%The time to densify did not count against the dense %algorithm.
+%The figure shows that our algorithm scales polynomially with %$d$ and $D$ and linearly with $N$, which is in accordance %with the analysis of section \ref{sec:analytical}.
+Summary performance comparison plots for quadratic (top) and cubic (bottom) cases showing how the algorithm's performance varies with $d$, $D$, and $N$; our sparse algorithm is shown in blue, the dense algorithm in red. Each point in each graph is an average of 20 runs, and the time used in densification is not included in the dense-algorithm timings. In the quadratic case, sparsity loses its advantage at about 67\%, and at about 77\% for the cubic case, though these precise intersections depend on $D$. In general, taking advantage of sparsity shows large benefits, so large that it's difficult to see that the performance does not actually change linearly with $D$ (column 2); figure \ref{fig:sparse_D_and_N_vs_time} gives further details.}
+\label{fig:all-vs-time}
+\end{center}
+\vskip -0.2in
+\end{figure*}
+
+\begin{figure*}[ht!]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\textwidth]{sparse_D_and_N_vs_time.png}}
+\caption{A closer view of only the sparse runtimes while varying $D$ (left) and $N$ (right) for $d = 0.2$. The left subplot shows that varying $D$ gives polynomial growth in runtime; quadratic for $k = 2$ (dashed line) and cubic for $k = 3$ (dotted line). These nonlinearities were not apparent in Figure \ref{fig:all-vs-time} due to the much greater runtimes of the dense algorithm. The right subplot shows linear growth in runtime for both. These findings are in accordance with the analysis of section \ref{sec:analytical}.}
+\label{fig:sparse_D_and_N_vs_time}
+\end{center}
+\vskip -0.2in
+\end{figure*}
 
 \section{Discussion}
-A natural question to ask is ``Why not just use a decent hashing algorithm?'' There are two answers. The first is that doing so does not avoid the \emph{computation} of features that contain a zero factor, and that alone prevents a reduction in big-O performance. The second is that hashing is great when you don't have a clear understanding of the distribution of items, but our index-computing function is simpler to compute than most hash functions, and provides perfect storage density. 
+A natural question to ask is ``Why not just use a decent hashing algorithm?'' There are two answers. The first is that doing so does not avoid the \emph{computation} of features that contain a zero factor, and that alone prevents a reduction in big-theta performance. The second is that hashing is great when you don't have a clear understanding of the distribution of items, but our index-computing function is simpler to compute than most hash functions, and provides perfect storage density. 
 
 \section{Conclusion}
 We have developed an algorithm for performing polynomial feature expansions on CSR matrices that scales polynomially with respect to the density of the matrix.
 The areas within machine learning that this work touches are not en vogue, but they are workhorses of industry, and every improvement in core representations has an impact across a broad range of applications. 
 %This improvement could therefore spare the burning of much fossil fuel.
+
+\newpage
 
 \bibliography{sparse_poly_icml}
 \bibliographystyle{icml2017}
