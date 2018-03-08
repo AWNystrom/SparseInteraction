@@ -419,7 +419,7 @@ f(i, j, k) = T_3(D) - [T_3(D-i-1) + T_2(D-j) - (k-j)]
 It can be seen that mappings to higher orders can be constructed inductively.
 A $K$ degree mapping is a function of the $K$-simplex numbers and reparameterized versions of all lower order mappings.
 However, in practice, higher degrees are not often used as the dimensionality of the expanded vectors becomes prohibitively large.
-A second degree polynomial expansion of $D=1000$ would have $\binom{1000}{4} = 41,417,124,750$ dimensions.
+A fourth degree polynomial expansion of a $D=1000$ vector would have $\binom{1000}{4} = 41,417,124,750$ dimensions.
 
 \section{Final CSR Polynomial Expansion Algorithm}
 With the mapping from columns of $\bm{A}$ to a column of $\bm{A}^K$, we can now write the final form of the innermost loop of the algorithm from \ref{sec:final-algo}.
