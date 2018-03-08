@@ -53,12 +53,11 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Speeding Up Polynomial Feature Expansions of Compressed Sparse Row Matrices}
+\icmltitlerunning{Speeding Up Polynomial Feature Expansions of Sparse CSR Matrices Using $K$-Simplex Numbers}
 
 \begin{document}
 
 \twocolumn[
-\icmltitle{Speeding Up Polynomial Feature Expansions by Leveraging Density}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -75,24 +74,20 @@
 % in order of appearance and this is the preferred way.
 \icmlsetsymbol{equal}{*}
 
-\begin{icmlauthorlist}
-\icmlauthor{Andrew Nystrom}{google}
-\icmlauthor{John Hughes}{brown}
-\end{icmlauthorlist}
-
-\icmlaffiliation{google}{Google Inc.}
-\icmlaffiliation{brown}{Brown University}
-
-\icmlcorrespondingauthor{Andrew Nystrom}{nystrom@google.com}
-\icmlcorrespondingauthor{John Hughes}{jfh@cs.brown.edu}
-
-% You may provide any keywords that you 
-% find helpful for describing your paper; these are used to populate 
-% the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{boring formatting information, machine learning, ICML}
+\author{
+  Nystrom, Andrew\\
+  \texttt{nystrom@google.com}
+  \and
+  Hughes, John\\
+  \texttt{jfh@cs.brown.edu}
+}
+\title{Speeding Up Polynomial Feature Expansions of Sparse CSR Matrices Using $K$-Simplex Numbers}
+\maketitle
 
 \vskip 0.3in
 ]
+
+\date{}
 
 % this must go after the closing bracket ] following \twocolumn[ ...
 
@@ -103,13 +98,14 @@
 % Remove it (just {}) if you do not need this facility.
 
 %\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
-\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
+%\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 %\footnotetext{hi}
 
 \begin{abstract}
 We provide an algorithm that speeds up polynomial and interaction feature expansion on sparse matrices.
 The algorithm operates on and produces a compressed sparse row matrix with no densification.
-It works by mapping (via simplex numbers) column indices with nonzero elements to a column index in the polynomial expansion vector, allowing for only the nonzero elements in a CSR matrix to be iterated over when computing products.
+It works by defining a bijective function involving simplex numbers of column indices in the original matrix to column indices in the expanded matrix.
+This function allows for only the nonzero elements to be iterated over and multiplied together, greatly improving the expansion of sparse matrices in compressed sparse row format.
 For a vector of dimension $D$ and density $0 \le d \le 1$, the algorithm has time complexity $\Theta(d^KD^K)$ where $K$ is the polynomial-feature order; this  is an improvement by a factor $d^K$ over the standard method.
 \end{abstract}
 
@@ -117,8 +113,8 @@ For a vector of dimension $D$ and density $0 \le d \le 1$, the algorithm has tim
 
 In machine learning and statistical modeling, feature mappings are intra-instance transformations, usually denoted by $x \mapsto \phi(\vec{x})$, that map instance vectors to higher dimensional spaces in which they are more linearly separable, allowing linear models to capture non-linearities \cite{yuan2012recent}.
 
-A well known and widely used feature mapping is the \emph{polynomial expansion}, which produces a new feature for each degree-$k$ monomial in the original features. (If the original features are $x,y,z$, the order-2 polynomial features are $x^2, y^2, z^2, xy, xz, xy$, and the order-3 ones are $x^3, y^3, z^3, x^2y, x^2z, xy^2, y^2 z, xz^2, yz^2,$ and $xyz$.)
-A $k$-order polynomial feature expansion of the feature space allows a linear model to learn polynomial relationships between dependent and independent variables.
+A well known and widely used feature mapping is the \emph{polynomial expansion}, which produces a new feature for each degree-$k$ monomial in the original features. (If the original features are $x,y,z$, the order-2 polynomial features are $x^2, y^2, z^2, xy, xz, xy$, and the order-3 ones are $x^3, y^3, z^3, x^2y, x^2z, xy^2, y^2 z, xz^2, yz^2,$ and $xyz$.
+A $K$-order polynomial feature expansion of the feature space allows a linear model to learn polynomial relationships between dependent and independent variables.
 This mapping was first utilized in a published experiment by Joseph Diaz Gergonne in 1815 \cite{gergonne1974application, smith1918standard}.
 
 While other methods for capturing nonlinearities have been developed, such as kernels (the direct offspring of feature mappings), trees, generative models, and neural networks, feature mappings are still a popular tool \cite{barker200114, chang2010training, shaw2006intellectual}.
@@ -146,13 +142,13 @@ the data describing nonzero columns of $\bm{a}_i$ are within the other two vecto
 Since only nonzero elements of each row are held, the overall number $N$ of columns of $\bm{A}$  must also be stored, since it cannot be derived
 from the other data.
 
-Uppercase $K$ refers to the degree of a polynomial or interaction expansion.
-When used as a superscript, $K$ indicates that element below it is in a polynomially expanded context.
-For example, if $nnz_i$ is the number of nonezero elements in the vector $i$th row vector of some matrix, $nnz_i^K$ is the number of nonzero elements in the polynomial expansion of that row vector.
-If lowercase $k$ refers to a column index.
-
 Scalars, vectors, and matrices are often decorated with a superscript $k$, which is not to be interpreted as an exponent, but instead as an indicator of polynomial expansion: 
 For example, if the CSR for $\bm{A}$ is $\bm{c}, \bm{d}, \bm{p}$, then $\bm{c}^2$ is the vector that holds columns for nonzero values in $\bm{A}$'s quadratic feature expansion CSR representation.
+
+Uppercase $K$ refers to the degree of a polynomial or interaction expansion.
+When used as a superscript of a non-scalar, $K$ indicates that element below it is in a polynomially expanded context.
+For example, if $nnz_i$ is the number of nonezero elements in the vector $i$th row vector of some matrix, $nnz_i^K$ is the number of nonzero elements in the polynomial expansion of that row vector.
+Lowercase $k$ refers to a column index.
 
 \section{Motivation}
 In this section, we present a strawman algorithm for computing polynomial feature expansions on dense matrices.
@@ -162,7 +158,7 @@ We then show how the algorithm would be feasible with an added component, which 
 It should be noted that in practice, as well as in our code and experiments, expansions for degrees $1, 2, \dots, k-1$ are also generated.
 The final design matrix is the augmentation of all such expansions.
 However, the algorithm descriptions in this paper omit these steps as they would become unnecessarily visually and notationally cumbersome.
-Extending them to include all degrees less than $K$ is trivial and does not affect the complexity of the algorithm as the terms that involve $k$ dominate.
+Extending them to include all degrees less than $K$ is trivial and does not affect the complexity of the algorithm as the terms that involve $K$ dominate.
 
 \subsection{Dense Second Degree Polynomial Expansion Algorithm}
 A natural way to calculate polynomial features for a matrix $\bm{A}$ is to walk down its rows and, for each row, take products of all $K$-combinations of elements.
@@ -251,7 +247,7 @@ Given the arbitrary columns involved in a polynomial feature of $\bm{A}_i$, we n
 We cannot simply reset a counter for each row as we did in the dense algorithm,  because only columns corresponding to nonzero values are stored.
 Any time a column that would have held a zero value is implicitly skipped, the counter would err.
 
-To develop a general algorithm, we require a mapping from a list of $k$ columns of $\bm{A}$ to a column of $\bm{A}^k$.
+To develop a general algorithm, we require a mapping from a list of $K$ columns of $\bm{A}$ to a single column of $\bm{A}^K$.
 If there are $D$ columns of $\bm{A}$ and $\binom{D}{K}$ columns of $\bm{A}^K$, this can be accomplished by a bijective mapping of the following form:
 
 \begin{equation}
@@ -261,10 +257,9 @@ If there are $D$ columns of $\bm{A}$ and $\binom{D}{K}$ columns of $\bm{A}^K$, t
 where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{K-1} < D$, (ii) $(j_0, j_1, \dots, j_{K-1})$ are elements of $\bm{c}$ and (iii) $p_{j_0j_1 \dots i_{K-1}}$ is an element of $\bm{c}^K$. (For interaction features, the constraint is $ 0 \le j_0 < j_1 < \dots < j_{K-1} < D$.)
 
 Stated more verbosely, we require a bijective mapping from tuples consisting of column indicies of the original input to where the column index of the corresponding product of features in the polynomial expansion.
-While any bijective mapping would suffice, a common order in which to produce polynomial features is $(0, 1), (0, 2), \dots, (0, D-1), (1, 1), (1, 2), \dots (1, D-1), \dots (D-1, D-1)$ for $K=2$ where the elements of the tuples are column indices.
+While any bijective mapping would suffice, a common order in which to produce polynomial features is $(0, 1)$, $(0, 2)$, $\dots$, $(0, D-1)$, $(1, 1)$, $(1, 2)$, $\dots$, $(1, D-1)$, $\dots$, $(D-1, D-1)$ for $K=2$ where the elements of the tuples are column indices.
 That is, the further to the right an index is, the sooner it is incremented.
-We refer to this order as \emph{big endian order} as it can be thought of as the way digits in a big endian number system are incremented when counting.
-If we want for our algorithm to be backwards compatible with existing models, the mapping must use the big endian ordering.
+If we want for our algorithm to be backwards compatible with existing models, the mapping must use the this same ordering.
 
 %column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix, and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$ where the product of elements corresponding to indices $i_0, i_1, \dots, i_{k-1}$ will be stored.
 
@@ -276,7 +271,7 @@ We will construct mappings for second ($K=2$) and third ($K=3$) degree interacti
 In order to accomplish this, we will require the triangle and tetrahedral numbers.
 We denote the $n$th triangle number as $T_2(n) = \frac{n(n+1)}{2}$ and the $n$th tetrahedral number as $T_3(n) = \frac{n(n+1)(n+2)}{6}$.
 
-For reference, we list the first four triangle and tetrahedral numbers in the following table:
+For reference, we list the first five triangle and tetrahedral numbers in the following table:
 
 \begin{tabular}{| c | c | c |}
   \hline
@@ -455,21 +450,21 @@ Instead of $\binom{|\bm{c}_i|}{K}$, we have $\binom{|\bm{c}_i|-1}{K}$.
 \subsection{Analytical}
 \label{sec:analytical}
 
-Calculating $k$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $\binom{dD}{k}$ (with repetition) products.
-The complexity of the algorithm, for fixed $k \ll dD$, is therefore
+Calculating $K$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $\binom{dD}{K}$ products.
+The complexity of the algorithm, for fixed $K \ll dD$, is therefore
 \begin{align}
-& \Theta\left(\binom{dD+K-1}{k}\right) = \Theta\left(\frac{(dD+K-1)!}{K!(dD-1)!}\right)\\
+& \Theta\left(\binom{dD+K-1}{K}\right) = \Theta\left(\frac{(dD+K-1)!}{K!(dD-1)!}\right)\\
 & = \Theta\left(\frac{(dD+K-1)(dD+K-2) \dots (dD)}{K!}\right)\\
 & = \Theta\left((dD+K-1)(dD+K-2) \dots (dD)\right)\\
 & = \Theta\left(d^KD^K\right)
 \end{align}
 
 For a matrix of size $N \times D$, the complexity is therefore $\Theta\left(Nd^KD^K\right)$.
-The dense algorithm does not leverage sparsity, and its complexity is $\Theta\left(ND^K\right)$.
+The dense algorithm (algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}) does not leverage sparsity, and its complexity is $\Theta\left(ND^K\right)$.
 Since $0 \le d \le 1$, the sparse algorithm scales polynomially with the degree of the polynomial expansion.
 
 \subsection{Empirical Results}
-To verify the average time complexity of our algorithm, we implemented both the sparse version and the baseline in the Cython programming language so that results would be directly comparable.
+To empirically verify the average time complexity of our algorithm, we implemented both the sparse version and the baseline in the Cython programming language so that results would be directly comparable.
 We sought the relationships between runtime and the instance count ($N$), the instance dimensionality ($D$), and the instance density ($d$).
 
 To find these relationships, we individually varied $N$, $D$, and $d$ while holding the remaining two constant.
