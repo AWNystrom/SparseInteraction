@@ -53,11 +53,12 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Speeding Up Polynomial Feature Expansions of Sparse CSR Matrices Using $K$-Simplex Numbers}
+\icmltitlerunning{Leveraging Sparsity to Speed Up Polynomial Feature Expansions of CSR Matrices Using $K$-Simplex Numbers}
 
 \begin{document}
 
 \twocolumn[
+\icmltitle{Leveraging Sparsity to Speed Up Polynomial Feature Expansions of CSR Matrices Using $K$-Simplex Numbers}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -74,20 +75,24 @@
 % in order of appearance and this is the preferred way.
 \icmlsetsymbol{equal}{*}
 
-\author{
-  Nystrom, Andrew\\
-  \texttt{nystrom@google.com}
-  \and
-  Hughes, John\\
-  \texttt{jfh@cs.brown.edu}
-}
-\title{Speeding Up Polynomial Feature Expansions of Sparse CSR Matrices Using $K$-Simplex Numbers}
-\maketitle
+\begin{icmlauthorlist}
+\icmlauthor{Andrew Nystrom}{google}
+\icmlauthor{John Hughes}{brown}
+\end{icmlauthorlist}
+
+\icmlaffiliation{google}{Google Inc.}
+\icmlaffiliation{brown}{Brown University}
+
+\icmlcorrespondingauthor{Andrew Nystrom}{nystrom@google.com}
+\icmlcorrespondingauthor{John Hughes}{jfh@cs.brown.edu}
+
+% You may provide any keywords that you 
+% find helpful for describing your paper; these are used to populate 
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{csr, polynomial, sparse, expansion, triangle, tetrahedral, simplex}
 
 \vskip 0.3in
 ]
-
-\date{}
 
 % this must go after the closing bracket ] following \twocolumn[ ...
 
@@ -97,7 +102,7 @@
 % The \icmlEqualContribution command is standard text for equal contribution.
 % Remove it (just {}) if you do not need this facility.
 
-%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
 %\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 %\footnotetext{hi}
 
@@ -359,7 +364,7 @@ f(i, j) = T_2(D) - [T_2(D-i) - (j - i)]
 \end{equation}
 
 \subsection{Third Degree Interaction Mapping}
-For $K=3$, we can no longer view the necessary function as mapping matrix coordinates to cell values, but rather, $2x2$ tensor coordinates to cell values.
+For $K=3$, we can no longer view the necessary function as mapping matrix coordinates to cell values, but rather, $DxDxD$ tensor coordinates to cell values.
 For simplicity, we will instead list the column index tuples and their necessary mappings in a table.
 We shall consider the case of $D=5$.
 
