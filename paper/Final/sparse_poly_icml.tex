@@ -102,7 +102,7 @@
 % The \icmlEqualContribution command is standard text for equal contribution.
 % Remove it (just {}) if you do not need this facility.
 
-\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
 %\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 %\footnotetext{hi}
 
@@ -151,8 +151,8 @@ Scalars, vectors, and matrices are often decorated with a superscript $k$, which
 For example, if the CSR for $\bm{A}$ is $\bm{c}, \bm{d}, \bm{p}$, then $\bm{c}^2$ is the vector that holds columns for nonzero values in $\bm{A}$'s quadratic feature expansion CSR representation.
 
 Uppercase $K$ refers to the degree of a polynomial or interaction expansion.
-When used as a superscript of a non-scalar, $K$ indicates that element below it is in a polynomially expanded context.
-For example, if $nnz_i$ is the number of nonezero elements in the vector $i$th row vector of some matrix, $nnz_i^K$ is the number of nonzero elements in the polynomial expansion of that row vector.
+When a superscript $\kappa$ (kappa) appears, it indicates that the element below it is in a polynomially expanded context of degree $K$.
+For example, if $nnz_i$ is the number of nonezero elements in the vector $i$th row vector of some matrix, $nnz_i^\kappa$ is the number of nonzero elements in the polynomial expansion of that row vector.
 Lowercase $k$ refers to a column index.
 
 \section{Motivation}
@@ -167,8 +167,8 @@ Extending them to include all degrees less than $K$ is trivial and does not affe
 
 \subsection{Dense Second Degree Polynomial Expansion Algorithm}
 A natural way to calculate polynomial features for a matrix $\bm{A}$ is to walk down its rows and, for each row, take products of all $K$-combinations of elements.
-To determine in which column of $\bm{A}^K_i$ products of elements in $\bm{A}_i$ belong, a simple counter can be set to zero for each row of $\bm{A}$ and incremented after each polynomial feature is generated.
-This counter gives the column of $\bm{A}^K_i$ into which each expansion feature belongs.
+To determine in which column of $\bm{A}^\kappa_i$ products of elements in $\bm{A}_i$ belong, a simple counter can be set to zero for each row of $\bm{A}$ and incremented after each polynomial feature is generated.
+This counter gives the column of $\bm{A}^\kappa_i$ into which each expansion feature belongs.
 This is shown in Algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}.
 
 % BEGIN vrtically centered
@@ -181,12 +181,12 @@ This is shown in Algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}.
    \label{alg:Dense-Second-Order-Polynomial-Expansion}
 \begin{algorithmic}[1]
    \STATE {\bfseries Input:} data $\bm{A}$, size $N \times D$
-   \STATE $\bm{A}^K$ $\gets$ empty $N \times \binom{D}{2}$ matrix
+   \STATE $\bm{A}^\kappa$ $\gets$ empty $N \times \binom{D}{2}$ matrix
    \FOR{$i \gets 0$ {\bfseries to} $N-1$}
       \STATE $c_p \gets 0$
       \FOR{$j_1 \gets 0$ {\bfseries to} $D-1$}
           \FOR{$j_2 \gets j_1$ {\bfseries to} $D-1$}
-              \STATE $\bm{A}^K_{i{c_p}} \gets \bm{A}_{ij_1} \cdot \bm{A}_{ij_2}$
+              \STATE $\bm{A}^\kappa_{i{c_p}} \gets \bm{A}_{ij_1} \cdot \bm{A}_{ij_2}$
               \STATE $c_p \gets c_p + 1$
           \ENDFOR
       \ENDFOR
@@ -199,7 +199,7 @@ This is shown in Algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}.
 \subsection{Incomplete Second Degree CSR Polynomial Expansion Algorithm}
 \label{sec:final-algo}
 Now consider how this algorithm might be modified to accept a CSR matrix.
-Instead of walking directly down rows of $\bm{A}$, we will walk down sections of $\bm{c}$ and $\bm{d}$ partitioned by $\bm{p}$, and instead of inserting polynomial features into $\bm{A}^K$, we will insert column numbers into $\bm{c}^K$ and data elements into $\bm{d}^K$.
+Instead of walking directly down rows of $\bm{A}$, we will walk down sections of $\bm{c}$ and $\bm{d}$ partitioned by $\bm{p}$, and instead of inserting polynomial features into $\bm{A}^\kappa$, we will insert column numbers into $\bm{c}^\kappa$ and data elements into $\bm{d}^\kappa$.
 Throughout the algorithm, we use variables named $nnz$, with sub- or superscripts, to indicate the number of nonzero entries in either a matrix or a row of a matrix. 
 See Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
 
@@ -214,21 +214,21 @@ See Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
    \label{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}
 \begin{algorithmic}[1]
    \STATE {\bfseries Input:} data $\bm{A}$, size $N \times D$
-   \STATE $\bm{p}^K$ $\gets$ vector of size $N+1$
-   \STATE $\bm{p}^K_0 \gets 0$
-   \STATE $nnz^K \gets 0$
+   \STATE $\bm{p}^\kappa$ $\gets$ vector of size $N+1$
+   \STATE $\bm{p}^\kappa_0 \gets 0$
+   \STATE $nnz^\kappa \gets 0$
    \FOR{$i \gets 0$ {\bfseries to} $N-1$}
       \STATE $i_{start} \gets \bm{p}_i$
       \STATE $i_{stop} \gets \bm{p}_{i+1}$
       \STATE $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
-      \STATE $nnz^K_i \gets \binom{|\bm{c}_i|}{2}$ \label{li:row_nnz_count}
-      \STATE $nnz^K \gets nnz^K + nnz^K_i$
-      \STATE $\bm{p}^K_{i+1} \gets \bm{p}^K_i + nnz^K_i$
+      \STATE $nnz^\kappa_i \gets \binom{|\bm{c}_i|}{2}$ \label{li:row_nnz_count}
+      \STATE $nnz^\kappa \gets nnz^\kappa + nnz^\kappa_i$
+      \STATE $\bm{p}^\kappa_{i+1} \gets \bm{p}^\kappa_i + nnz^\kappa_i$
   \ENDFOR
   
-  \STATE $\bm{p}^K$ $\gets$ vector of size $N+1$
-  \STATE $\bm{c}^K$ $\gets$ vector of size $nnz^K$
-  \STATE $\bm{d}^K$ $\gets$ vector of size $nnz^K$
+  \STATE $\bm{p}^\kappa$ $\gets$ vector of size $N+1$
+  \STATE $\bm{c}^\kappa$ $\gets$ vector of size $nnz^\kappa$
+  \STATE $\bm{d}^\kappa$ $\gets$ vector of size $nnz^\kappa$
   \STATE $n \gets 0$
   
   \FOR {$i \gets 0$ {\bfseries to} $N-1$}
@@ -238,8 +238,8 @@ See Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
       \STATE $\bm{d}_i \gets \bm{d}_{i_{start}:i_{stop}}$
       \FOR {$c_1 \gets 0$ {\bfseries to} $|\bm{c}_i|-1$}
           \FOR {$c_2 \gets c_1$ {\bfseries to} $|\bm{c}_i|-1$}
-              \STATE $\bm{d}^K_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
-              \STATE $\bm{c}^K_{n} = ?$ \label{li:set_ck}
+              \STATE $\bm{d}^\kappa_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
+              \STATE $\bm{c}^\kappa_{n} = ?$ \label{li:set_ck}
               \STATE $n \gets n + 1$
           \ENDFOR
       \ENDFOR
@@ -248,18 +248,18 @@ See Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
 \end{algorithm}
 
 The crux of the problem is at line 25 of Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
-Given the arbitrary columns involved in a polynomial feature of $\bm{A}_i$, we need to determine the corresponding column of $\bm{A}^K_i$.
+Given the arbitrary columns involved in a polynomial feature of $\bm{A}_i$, we need to determine the corresponding column of $\bm{A}^\kappa_i$.
 We cannot simply reset a counter for each row as we did in the dense algorithm,  because only columns corresponding to nonzero values are stored.
 Any time a column that would have held a zero value is implicitly skipped, the counter would err.
 
-To develop a general algorithm, we require a mapping from a list of $K$ columns of $\bm{A}$ to a single column of $\bm{A}^K$.
-If there are $D$ columns of $\bm{A}$ and $\binom{D}{K}$ columns of $\bm{A}^K$, this can be accomplished by a bijective mapping of the following form:
+To develop a general algorithm, we require a mapping from a list of $K$ columns of $\bm{A}$ to a single column of $\bm{A}^\kappa$.
+If there are $D$ columns of $\bm{A}$ and $\binom{D}{K}$ columns of $\bm{A}^\kappa$, this can be accomplished by a bijective mapping of the following form:
 
 \begin{equation}
 (j_0, j_1, \dots, j_{K-1}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{j_0j_1 \dots i_{K-1}} \in \{0,1,\dots,\binom{D}{K}-1\} 
 \end{equation}
 
-where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{K-1} < D$, (ii) $(j_0, j_1, \dots, j_{K-1})$ are elements of $\bm{c}$ and (iii) $p_{j_0j_1 \dots i_{K-1}}$ is an element of $\bm{c}^K$. (For interaction features, the constraint is $ 0 \le j_0 < j_1 < \dots < j_{K-1} < D$.)
+where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{K-1} < D$, (ii) $(j_0, j_1, \dots, j_{K-1})$ are elements of $\bm{c}$ and (iii) $p_{j_0j_1 \dots i_{K-1}}$ is an element of $\bm{c}^\kappa$. (For interaction features, the constraint is $ 0 \le j_0 < j_1 < \dots < j_{K-1} < D$.)
 
 Stated more verbosely, we require a bijective mapping from tuples consisting of column indicies of the original input to where the column index of the corresponding product of features in the polynomial expansion.
 While any bijective mapping would suffice, a common order in which to produce polynomial features is $(0, 1)$, $(0, 2)$, $\dots$, $(0, D-1)$, $(1, 1)$, $(1, 2)$, $\dots$, $(1, D-1)$, $\dots$, $(D-1, D-1)$ for $K=2$ where the elements of the tuples are column indices.
@@ -422,7 +422,7 @@ However, in practice, higher degrees are not often used as the dimensionality of
 A fourth degree polynomial expansion of a $D=1000$ vector would have $\binom{1000}{4} = 41,417,124,750$ dimensions.
 
 \section{Final CSR Polynomial Expansion Algorithm}
-With the mapping from columns of $\bm{A}$ to a column of $\bm{A}^K$, we can now write the final form of the innermost loop of the algorithm from \ref{sec:final-algo}.
+With the mapping from columns of $\bm{A}$ to a column of $\bm{A}^\kappa$, we can now write the final form of the innermost loop of the algorithm from \ref{sec:final-algo}.
 Let the polynomial mapping for $K=2$ be denoted $h^2$.
 Then the innermost loop can be completed as follows: %shown in Algorithm \ref{alg:Inner-Loop-of-Completed-Sparse-Second-Order-Polynomial-Expansion}.
 
@@ -434,8 +434,8 @@ Then the innermost loop can be completed as follows: %shown in Algorithm \ref{al
       \STATE $j_0 \gets \bm{c}_{c_0}$
       \STATE $j_1 \gets \bm{c}_{c_1}$
       \STATE $c_p \gets h^2(j_0, j_1)$
-      \STATE $\bm{d}^K_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
-      \STATE $\bm{c}^K_{n} = c_p$
+      \STATE $\bm{d}^\kappa_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
+      \STATE $\bm{c}^\kappa_{n} = c_p$
       \STATE $n \gets n + 1$
   \ENDFOR
 \end{algorithmic}
@@ -455,13 +455,12 @@ Instead of $\binom{|\bm{c}_i|}{K}$, we have $\binom{|\bm{c}_i|-1}{K}$.
 \subsection{Analytical}
 \label{sec:analytical}
 
-Calculating $K$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $\binom{dD}{K}$ products.
+Calculating $K$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $T_K(dD)$ products.
 The complexity of the algorithm, for fixed $K \ll dD$, is therefore
 \begin{align}
-& \Theta\left(\binom{dD+K-1}{K}\right) = \Theta\left(\frac{(dD+K-1)!}{K!(dD-1)!}\right)\\
-& = \Theta\left(\frac{(dD+K-1)(dD+K-2) \dots (dD)}{K!}\right)\\
-& = \Theta\left((dD+K-1)(dD+K-2) \dots (dD)\right)\\
-& = \Theta\left(d^KD^K\right)
+&\Theta\left(T_K(dD)\right) =\\
+&\Theta\left(dD(dD+1)(dD+2)\dots(dD+K-1)\right) =\\
+&\Theta\left(d^KD^K\right)
 \end{align}
 
 For a matrix of size $N \times D$, the complexity is therefore $\Theta\left(Nd^KD^K\right)$.
