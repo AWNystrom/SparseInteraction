@@ -1,0 +1,175 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% History of polynomial expansion
+
+@article{smith1918standard,
+  title={On the standard deviations of adjusted and interpolated values of an observed polynomial function and its constants and the guidance they give towards a proper choice of the distribution of observations},
+  author={Smith, Kirstine},
+  journal={Biometrika},
+  volume={12},
+  number={1/2},
+  pages={1--85},
+  year={1918},
+  publisher={JSTOR}
+}
+
+@article{gergonne1974application,
+  title={The application of the method of least squares to the interpolation of sequences},
+  author={Gergonne, J.D.},
+  journal={Historia Mathematica},
+  volume={1},
+  number={4},
+  pages={439--447},
+  year={1974},
+  publisher={Elsevier}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Usage of polynomial expansions
+
+@article{chang2010training,
+  title={Training and testing low-degree polynomial data mappings via linear SVM},
+  author={Chang, Yin-Wen and Hsieh, Cho-Jui and Chang, Kai-Wei and Ringgaard, Michael and Lin, Chih-Jen},
+  journal={Journal of Machine Learning Research},
+  volume={11},
+  number={Apr},
+  pages={1471--1490},
+  year={2010}
+}
+
+%%%% Applications
+@article{shaw2006intellectual,
+  title={Intellectual ability and cortical development in children and adolescents},
+  author={Shaw, Philip and Greenstein, Deanna and Lerch, Jason and Clasen, Liv and Lenroot, Rhoshel and Gogtay, NEEA and Evans, Alan and Rapoport, J and Giedd, J},
+  journal={Nature},
+  volume={440},
+  number={7084},
+  pages={676--679},
+  year={2006},
+  publisher={Nature Publishing Group}
+}
+
+@article{barker200114,
+  title={A 14,000-year oxygen isotope record from diatom silica in two alpine lakes on Mt. Kenya},
+  author={Barker, Philip A and Street-Perrott, F Alaine and Leng, Melanie J and Greenwood, PB and Swain, DL and Perrott, RA and Telford, RJ and Ficken, KJ},
+  journal={Science},
+  volume={292},
+  number={5525},
+  pages={2307--2310},
+  year={2001},
+  publisher={American Association for the Advancement of Science}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Explains the usefulness of feature mappings in linear models
+
+@article{yuan2012recent,
+  title={Recent advances of large-scale linear classification},
+  author={Yuan, Guo-Xun and Ho, Chia-Hua and Lin, Chih-Jen},
+  journal={Proceedings of the IEEE},
+  volume={100},
+  number={9},
+  pages={2584--2603},
+  year={2012},
+  publisher={IEEE}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% Competing algorithm
+@article{scikit-learn,
+ title={Scikit-learn: Machine Learning in {P}ython},
+ author={Pedregosa, F. and Varoquaux, G. and Gramfort, A. and Michel, V.
+         and Thirion, B. and Grisel, O. and Blondel, M. and Prettenhofer, P.
+         and Weiss, R. and Dubourg, V. and Vanderplas, J. and Passos, A. and
+         Cournapeau, D. and Brucher, M. and Perrot, M. and Duchesnay, E.},
+ journal={Journal of Machine Learning Research},
+ volume={12},
+ pages={2825--2830},
+ year={2011}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Sparse matrices
+
+@misc{saad1994sparskit,
+  title={SPARSKIT: a basic tool kit for sparse matrix computations},
+  author={Saad, Yousef},
+  year={1994},
+  publisher={Version}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Papers that use CSR matrices (to show they're widely used
+
+@article{liu2012sparse,
+  title={Sparse matrix-vector multiplication on NVIDIA GPU},
+  author={Liu, Hui and Yu, Song and Chen, Zhangxin and Hsieh, Ben and Shao, Lei},
+  journal={International Journal of Numerical Analysis \& Modeling, Series B},
+  volume={3},
+  number={2},
+  pages={185--191},
+  year={2012}
+}
+
+@inproceedings{bulucc2009parallel,
+  title={Parallel sparse matrix-vector and matrix-transpose-vector multiplication using compressed sparse blocks},
+  author={Bulu{\c{c}}, Aydin and Fineman, Jeremy T and Frigo, Matteo and Gilbert, John R and Leiserson, Charles E},
+  booktitle={Proceedings of the twenty-first annual symposium on Parallelism in algorithms and architectures},
+  pages={233--244},
+  year={2009},
+  organization={ACM}
+}
+
+@article{koenker2003sparsem,
+  title={SparseM: A sparse matrix package for R},
+  author={Koenker, Roger and Ng, Pin and others},
+  journal={Journal of Statistical Software},
+  volume={8},
+  number={6},
+  pages={1--9},
+  year={2003},
+  publisher={American Statistical Association}
+}
+
+% Extolls CSR format, which they use as a baseline.
+@techreport{bell2008efficient,
+  title={Efficient sparse matrix-vector multiplication on CUDA},
+  author={Bell, Nathan and Garland, Michael},
+  year={2008},
+  institution={Nvidia Technical Report NVR-2008-004, Nvidia Corporation}
+}
+
+% Theono supports CSR matrices
+@article{bastien2012theano,
+  title={Theano: new features and speed improvements},
+  author={Bastien, Fr{\'e}d{\'e}ric and Lamblin, Pascal and Pascanu, Razvan and Bergstra, James and Goodfellow, Ian and Bergeron, Arnaud and Bouchard, Nicolas and Warde-Farley, David and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1211.5590},
+  year={2012}
+}
+
+% Calls CSR the de facto standard.
+@inproceedings{white1997improving,
+  title={On improving the performance of sparse matrix-vector multiplication},
+  author={White, James B and Sadayappan, Ponnuswamy},
+  booktitle={High-Performance Computing, 1997. Proceedings. Fourth International Conference on},
+  pages={66--71},
+  year={1997},
+  organization={IEEE}
+}
+
+% C++ lib that supports CSR
+@article{pozo1996sparselib++,
+  title={Sparselib++ v. 1. 5 sparse matrix class library. reference guide},
+  author={Pozo, Roldan and Remington, Karin},
+  journal={NASA},
+  number={19980018804},
+  year={1996}
+}
+
+% Widely used C++ library that uses CSR
+@MISC{eigenweb,
+  author = {Ga\"{e}l Guennebaud and Beno\^{i}t Jacob and others},
+  title = {Eigen v3},
+  howpublished = {http://eigen.tuxfamily.org},
+  year = {2010}
+ }

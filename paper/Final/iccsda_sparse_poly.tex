@@ -1,0 +1,1181 @@
+
+%% bare_jrnl.tex
+%% V1.3
+%% 2007/01/11
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.7 or later) with an IEEE journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
+%% and
+%% http://www.ieee.org/
+
+
+
+% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
+% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
+% *** with production work. IEEE's font choices can trigger bugs that do  ***
+% *** not appear when using other class files.                            ***
+% The testflow support page is at:
+% http://www.michaelshell.org/tex/testflow/
+
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% User assumes all risk.
+%% In no event shall IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%
+%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
+%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex
+%%*************************************************************************
+
+% Note that the a4paper option is mainly intended so that authors in
+% countries using A4 can easily print to A4 and see how their papers will
+% look in print - the typesetting of the document will not typically be
+% affected with changes in paper size (but the bottom and side margins will).
+% Use the testflow package mentioned above to verify correct handling of
+% both paper sizes by the user's LaTeX system.
+%
+% Also note that the "draftcls" or "draftclsnofoot", not "draft", option
+% should be used if it is desired that the figures are to be displayed in
+% draft mode.
+%
+\documentclass[journal]{journal}
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[journal]{../sty/IEEEtran}
+
+
+
+
+
+% Some very useful LaTeX packages include:
+% (uncomment the ones you want to load)
+
+
+% *** MISC UTILITY PACKAGES ***
+%
+%\usepackage{ifpdf}
+% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
+% compilation based on whether the output is pdf or dvi.
+% usage:
+% \ifpdf
+%   % pdf code
+% \else
+%   % dvi code
+% \fi
+% The latest version of ifpdf.sty can be obtained from:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/oberdiek/
+% Also, note that IEEEtran.cls V1.7 and later provides a builtin
+% \ifCLASSINFOpdf conditional that works the same way.
+% When switching from latex to pdflatex and vice-versa, the compiler may
+% have to be run twice to clear warning/error messages.
+
+% use Times
+\usepackage{times}
+% For figures
+\usepackage{graphicx} % more modern
+%\usepackage{epsfig} % less modern
+\usepackage{subfigure} 
+
+% For citations
+%\usepackage{natbib}
+
+% For algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{float}
+\usepackage{footmisc}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{caption}
+
+% As of 2011, we use the hyperref package to produce hyperlinks in the
+% resulting PDF.  If this breaks your system, please commend out the
+% following usepackage line and replace \usepackage{icml2017} with
+% \usepackage[nohyperref]{icml2017} above.
+\usepackage{hyperref}
+
+% Packages hyperref and algorithmic misbehave sometimes.  We can fix
+% this with the following command.
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+
+
+
+% *** CITATION PACKAGES ***
+%
+%\usepackage{cite}
+% cite.sty was written by Donald Arseneau
+% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+% \cite{} output to follow that of IEEE. Loading the cite package will
+% result in citation numbers being automatically sorted and properly
+% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+% \cite will automatically add leading space, if needed. Use cite.sty's
+% noadjust option (cite.sty V3.8 and later) if you want to turn this off.
+% cite.sty is already installed on most LaTeX systems. Be sure and use
+% version 4.0 (2003-05-27) and later if using hyperref.sty. cite.sty does
+% not currently provide for hyperlinked citations.
+% The latest version can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/cite/
+% The documentation is contained in the cite.sty file itself.
+
+
+
+
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at: 
+% http://www.ctan.org/tex-archive/macros/latex/required/graphics/
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found as epslatex.ps or
+% epslatex.pdf at: http://www.ctan.org/tex-archive/info/
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+
+
+
+
+% *** MATH PACKAGES ***
+%
+%\usepackage[cmex10]{amsmath}
+% A popular package from the American Mathematical Society that provides
+% many useful and powerful commands for dealing with mathematics. If using
+% it, be sure to load this package with the cmex10 option to ensure that
+% only type 1 fonts will utilized at all point sizes. Without this option,
+% it is possible that some math symbols, particularly those within
+% footnotes, will be rendered in bitmap form which will result in a
+% document that can not be IEEE Xplore compliant!
+%
+% Also, note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+%\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/amslatex/math/
+
+
+
+
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+%\usepackage{algorithmic}
+% algorithmic.sty was written by Peter Williams and Rogerio Brito.
+% This package provides an algorithmic environment fo describing algorithms.
+% You can use the algorithmic environment in-text or within a figure
+% environment to provide for a floating algorithm. Do NOT use the algorithm
+% floating environment provided by algorithm.sty (by the same authors) or
+% algorithm2e.sty (by Christophe Fiorio) as IEEE does not use dedicated
+% algorithm float types and packages that provide these will not provide
+% correct IEEE style captions. The latest version and documentation of
+% algorithmic.sty can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithms/
+% There is also a support site at:
+% http://algorithms.berlios.de/index.html
+% Also of interest may be the (relatively newer and more customizable)
+% algorithmicx.sty package by Szasz Janos:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithmicx/
+
+
+
+
+% *** ALIGNMENT PACKAGES ***
+%
+%\usepackage{array}
+% Frank Mittelbach's and David Carlisle's array.sty patches and improves
+% the standard LaTeX2e array and tabular environments to provide better
+% appearance and additional user controls. As the default LaTeX2e table
+% generation code is lacking to the point of almost being broken with
+% respect to the quality of the end results, all users are strongly
+% advised to use an enhanced (at the very least that provided by array.sty)
+% set of table tools. array.sty is already installed on most systems. The
+% latest version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/tools/
+
+
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+% Also highly recommended is Mark Wooding's extremely powerful MDW tools,
+% especially mdwmath.sty and mdwtab.sty which are used to format equations
+% and tables, respectively. The MDWtools set is already installed on most
+% LaTeX systems. The lastest version and documentation is available at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
+
+
+% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+% generate multiline equations as well as matrices, tables, etc., of high
+% quality.
+
+
+%\usepackage{eqparbox}
+% Also of notable interest is Scott Pakin's eqparbox package for creating
+% (automatically sized) equal width boxes - aka "natural width parboxes".
+% Available at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/eqparbox/
+
+
+
+
+
+% *** SUBFIGURE PACKAGES ***
+%\usepackage[tight,footnotesize]{subfigure}
+% subfigure.sty was written by Steven Douglas Cochran. This package makes it
+% easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
+% work, it is a good idea to load it with the tight package option to reduce
+% the amount of white space around the subfigures. subfigure.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at:
+% http://www.ctan.org/tex-archive/obsolete/macros/latex/contrib/subfigure/
+% subfigure.sty has been superceeded by subfig.sty.
+
+
+
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+% subfig.sty, also written by Steven Douglas Cochran, is the modern
+% replacement for subfigure.sty. However, subfig.sty requires and
+% automatically loads Axel Sommerfeldt's caption.sty which will override
+% IEEEtran.cls handling of captions and this will result in nonIEEE style
+% figure/table captions. To prevent this problem, be sure and preload
+% caption.sty with its "caption=false" package option. This is will preserve
+% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later 
+% (recommended due to many improvements over 1.2) of subfig.sty supports
+% the caption=false option directly:
+%\usepackage[caption=false,font=footnotesize]{subfig}
+%
+% The latest version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
+% The latest version and documentation of caption.sty can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/caption/
+
+
+
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure. The latest version and documentation can be found at:
+% http://www.ctan.org/tex-archive/macros/latex/base/
+
+
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/sttools/
+% Documentation is contained in the stfloats.sty comments as well as in the
+% presfull.pdf file. Do not use the stfloats baselinefloat ability as IEEE
+% does not allow \baselineskip to stretch. Authors submitting work to the
+% IEEE should note that IEEE rarely uses double column equations and
+% that authors should try to avoid such use. Do not be tempted to use the
+% cuted.sty or midfloat.sty packages (also by Sigitas Tolusis) as IEEE does
+% not format its papers in such ways.
+
+
+%\ifCLASSOPTIONcaptionsoff
+%  \usepackage[nomarkers]{endfloat}
+% \let\MYoriglatexcaption\caption
+% \renewcommand{\caption}[2][\relax]{\MYoriglatexcaption[#2]{#2}}
+%\fi
+% endfloat.sty was written by James Darrell McCauley and Jeff Goldberg.
+% This package may be useful when used in conjunction with IEEEtran.cls'
+% captionsoff option. Some IEEE journals/societies require that submissions
+% have lists of figures/tables at the end of the paper and that
+% figures/tables without any captions are placed on a page by themselves at
+% the end of the document. If needed, the draftcls IEEEtran class option or
+% \CLASSINPUTbaselinestretch interface can be used to increase the line
+% spacing as well. Be sure and use the nomarkers option of endfloat to
+% prevent endfloat from "marking" where the figures would have been placed
+% in the text. The two hack lines of code above are a slight modification of
+% that suggested by in the endfloat docs (section 8.3.1) to ensure that
+% the full captions always appear in the list of figures/tables - even if
+% the user used the short optional argument of \caption[]{}.
+% IEEE papers do not typically make use of \caption[]'s optional argument,
+% so this should not be an issue. A similar trick can be used to disable
+% captions of packages such as subfig.sty that lack options to turn off
+% the subcaptions:
+% For subfig.sty:
+% \let\MYorigsubfloat\subfloat
+% \renewcommand{\subfloat}[2][\relax]{\MYorigsubfloat[]{#2}}
+% For subfigure.sty:
+% \let\MYorigsubfigure\subfigure
+% \renewcommand{\subfigure}[2][\relax]{\MYorigsubfigure[]{#2}}
+% However, the above trick will not work if both optional arguments of
+% the \subfloat/subfig command are used. Furthermore, there needs to be a
+% description of each subfigure *somewhere* and endfloat does not add
+% subfigure captions to its list of figures. Thus, the best approach is to
+% avoid the use of subfigure captions (many IEEE journals avoid them anyway)
+% and instead reference/explain all the subfigures within the main caption.
+% The latest version of endfloat.sty and its documentation can obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/endfloat/
+%
+% The IEEEtran \ifCLASSOPTIONcaptionsoff conditional can also be used
+% later in the document, say, to conditionally put the References on a 
+% page by themselves.
+
+
+
+
+
+% *** PDF, URL AND HYPERLINK PACKAGES ***
+%
+%\usepackage{url}
+% url.sty was written by Donald Arseneau. It provides better support for
+% handling and breaking URLs. url.sty is already installed on most LaTeX
+% systems. The latest version can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/misc/
+% Read the url.sty source comments for usage information. Basically,
+% \url{my_url_here}.
+
+
+
+
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\pagestyle{empty}
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Leveraging Sparsity to Speed Up Polynomial Feature Expansions of CSR Matrices Using $K$-Simplex Numbers}
+%
+%
+% author names and IEEE memberships
+% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
+% a structure at a ~ so this keeps an author's name from being broken across
+% two lines.
+% use \thanks{} to gain access to the first footnote area
+% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
+% was not built to handle multiple paragraphs
+%
+
+%\author{Michael~Shell,
+%        John~Doe,~\IEEEmembership{Fellow,~OSA,}
+%        and~Jane~Doe,~\IEEEmembership{Life~Fellow,~IEEE}% <-this % stops a space
+%\thanks{M. Shell is with the Department
+%of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
+%GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
+%\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised January 11, 2007.}}
+
+% note the % following the last \IEEEmembership and also \thanks - 
+% these prevent an unwanted space from occurring between the last author name
+% and the end of the author line. i.e., if you had this:
+% 
+% \author{....lastname \thanks{...} \thanks{...} }
+%                     ^------------^------------^----Do not want these spaces!
+%
+% a space would be appended to the last name and could cause every name on that
+% line to be shifted left slightly. This is one of those "LaTeX things". For
+% instance, "\textbf{A} \textbf{B}" will typeset as "A B" not "AB". To get
+% "AB" then you have to do: "\textbf{A}\textbf{B}"
+% \thanks is no different in this regard, so shield the last } of each \thanks
+% that ends a line with a % and do not let a space in before the next \thanks.
+% Spaces after \IEEEmembership other than the last one are OK (and needed) as
+% you are supposed to have spaces between the names. For what it is worth,
+% this is a minor point as most people would not even notice if the said evil
+% space somehow managed to creep in.
+
+
+
+% The paper headers
+\markboth{Journal of \LaTeX\ Class Files,~Vol.~6, No.~1, January~2007}%
+{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Journals}
+% The only time the second header will appear is for the odd numbered pages
+% after the title page when using the twoside option.
+% 
+% *** Note that you probably will NOT want to include the author's ***
+% *** name in the headers of peer review papers.                   ***
+% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
+% you desire.
+
+
+
+
+% If you want to put a publisher's ID mark on the page you can do it like
+% this:
+%\IEEEpubid{0000--0000/00\$00.00~\copyright~2007 IEEE}
+% Remember, if you use this you must call \IEEEpubidadjcol in the second
+% column for its text to clear the IEEEpubid mark.
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+\maketitle
+\thispagestyle{empty}
+
+
+\begin{abstract}
+%\boldmath
+An algorithm is provided for performing polynomial feature expansions whose input and output are compressed sparse row (CSR) matrices.
+Previously, no such algorithm existed, and performing these expansions on CSR matrices required an intermediate densification step.
+%The algorithm operates on and produces a compressed sparse row matrix with no densification.
+The algorithm works by using a bijective function involving simplex numbers of column indices in the original matrix to column indices in the expanded matrix.
+Not only is space saved by working only in CSR format, but the bijective function allows for only the nonzero elements to be iterated over and multiplied together during the expansion, greatly improving average time complexity.
+For a vector of dimension $D$ and density $0 \le d \le 1$, the algorithm has time complexity $\Theta(d^KD^K)$ where $K$ is the polynomial-feature order; this  is an improvement by a factor $d^K$ over the standard method.
+\end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the journal you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals frown on math
+% in the abstract anyway.
+
+% Note that keywords are not normally used for peerreview papers.
+\begin{IEEEkeywords}
+compressed sparse row, csr, feature expansion, feature mapping, polynomial feature expansion, simplex numbers, sparse matrix, tetrahedral numbers, triangle numbers
+\end{IEEEkeywords}
+
+
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+
+In machine learning and statistical modeling, feature mappings are intra-instance transformations, usually denoted by $x \mapsto \phi(\vec{x})$, that map instance vectors to higher dimensional spaces in which they are more linearly separable, allowing linear models to capture nonlinearities \cite{yuan2012recent}.
+
+A well known and widely used feature mapping is the \emph{polynomial expansion}, which produces a new feature for each degree-$k$ monomial in the original features.
+If the original features are $x,y,z$, the order-2 polynomial features are $x^2, y^2, z^2, xy, xz, xy, yz$, and the order-3 polynomial features are $x^3, y^3, z^3, x^2y, x^2z, xy^2, y^2 z, xz^2, yz^2,$ and $xyz$.
+A $K$-order polynomial feature expansion of the feature space allows a linear model to learn polynomial relationships between dependent and independent variables.
+This mapping was first utilized in a published experiment by Joseph Diaz Gergonne in 1815 \cite{gergonne1974application, smith1918standard}.
+
+While other methods for capturing nonlinearities have been developed, such as kernels (the direct offspring of feature mappings), trees, generative models, and neural networks, feature mappings are still a popular tool \cite{barker200114, chang2010training, shaw2006intellectual}.
+The instance-independent nature of feature mappings allows them to pair well with linear parameter estimation techniques such as stochastic gradient descent, making them a candidate for certain types of large-scale machine learning problems when $D \ll N$.
+
+The compressed sparse row (CSR) matrix format \cite{saad1994sparskit} is widely used \cite{liu2012sparse, bulucc2009parallel, bell2008efficient, white1997improving} and supported \cite{eigenweb, bastien2012theano, scikit-learn, koenker2003sparsem}, and is considered the standard data structure for sparse, computationally heavy tasks.
+However, polynomial feature expansions cannot be performed directly on CSR matrices, nor on any sparse matrix format, without intermediate densification steps.
+This densification not only adds overhead, but wastefully computes combinations of features that have a product of zero, which are then discarded during conversion into a sparse format.
+
+We describe an algorithm that takes a CSR matrix as input and produces a CSR matrix for its degree-$K$ polynomial feature expansion with no intermediate densification.
+The algorithm leverages the CSR format to only compute products of features that result in nonzero values.
+This exploits the sparsity of the data to achieve an improved time complexity of $\Theta(d^KD^K)$ on each vector of the matrix where $K$ is the degree of the expansion, $D$ is the dimensionality, and $d$ is the density.
+The standard algorithm has time complexity $\Theta(D^K)$.
+Since $0 \le d \le 1$, our algorithm is a significant improvement for small $d$.
+While the algorithm we describe uses CSR matrices, it can be readily adapted to other sparse formats.
+
+\section{Notation}
+We denote matrices by uppercase bold letters thus: $\bm{A}$. 
+The $i^{th}$ the row of $\bm{A}$ is written $\bm{a}_i$. All vectors are written in bold, and  $\bm{a}$, with no subscript, is a vector. Non-bold letters are scalars. We sometimes use `slice' notation on subscripts, so that $x_{2:5}$ indicates the second through fifth elements of the vector $x$.
+
+A CSR matrix representation of an $r$-row matrix $\bm{A}$ consists of three vectors: $\bm{c}$, $\bm{d}$, and $\bm{p}$ and a single number: the number $N$ of columns of $\bm{A}$. The vectors
+$\bm{c}$ and $\bm{d}$ contain the same number of elements, and hold the column indices and data values, respectively, of all nonzero elements of $\bm{A}$.
+The vector $\bm{p}$ has $r$ entries. The values in $\bm{p}$ index both $\bm{c}$ and $\bm{d}$. The $i$th entry $\bm{p}_i$ of $\bm{p}$ tells where
+the data describing nonzero columns of $\bm{a}_i$ are within the other two vectors: $\bm{c}_{\bm{p}_i:\bm{p}_{i+1}}$ contain the column indices of those entries; $\bm{d}_{\bm{p}_i:\bm{p}_{i+1}}$ contain the entries themselves.
+Since only nonzero elements of each row are held, the overall number $N$ of columns of $\bm{A}$  must also be stored, since it cannot be derived
+from the other data.
+
+Scalars, vectors, and matrices are often decorated with a superscript $k$, which is not to be interpreted as an exponent, but instead as an indicator of polynomial expansion: 
+For example, if the CSR for $\bm{A}$ is $\bm{c}, \bm{d}, \bm{p}$, then $\bm{c}^2$ is the vector that holds columns for nonzero values in $\bm{A}$'s quadratic feature expansion CSR representation.
+
+Uppercase $K$ refers to the degree of a polynomial or interaction expansion.
+When a superscript $\kappa$ (kappa) appears, it indicates that the element below it is in a polynomially expanded context of degree $K$.
+For example, if $nnz_i$ is the number of nonezero elements in the vector $i$th row vector of some matrix, $nnz_i^\kappa$ is the number of nonzero elements in the polynomial expansion of that row vector.
+Lowercase $k$ refers to a column index.
+
+\section{Motivation}
+In this section we present a strawman algorithm for computing polynomial feature expansions on dense matrices.
+We then modify the algorithm  slightly to operate on a CSR matrix, to expose its infeasibility in that context.
+We then show how the algorithm would be feasible with a bijective mapping from $k$-tuples of column indicies in the input matrix to column indices in the polynomial expansion matrix, which we then derive in the following section.
+
+It should be noted that in practice, as well as in our code and experiments, expansions for degrees $1, 2, \dots, k-1$ are also generated.
+The final design matrix is the augmentation of all such expansions.
+However, the algorithm descriptions in this paper omit these steps as they would become unnecessarily visually and notationally cumbersome.
+Extending them to include all degrees less than $K$ is trivial and does not affect the complexity of the algorithm as the terms that involve $K$ dominate.
+
+\subsection{Dense Second Degree Polynomial Expansion Algorithm}
+A natural way to calculate polynomial features for a matrix $\bm{A}$ is to walk down its rows and, for each row, take products of all $K$-combinations of elements.
+To determine in which column of $\bm{A}^\kappa_i$ products of elements in $\bm{A}_i$ belong, a simple counter can be set to zero for each row of $\bm{A}$ and incremented after each polynomial feature is generated.
+This counter gives the column of $\bm{A}^\kappa_i$ into which each expansion feature belongs.
+This is shown in Algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}.
+
+% BEGIN vrtically centered
+%\pagebreak
+%\hspace{0pt}
+%\vfill
+
+\begin{algorithm}%[H]
+   \caption{Dense Second Order Polynomial Expansion}
+   \label{alg:Dense-Second-Order-Polynomial-Expansion}
+\begin{algorithmic}[1]
+   \STATE {\bfseries Input:} data $\bm{A}$, size $N \times D$
+   \STATE $\bm{A}^\kappa$ $\gets$ empty $N \times \binom{D}{2}$ matrix
+   \FOR{$i \gets 0$ {\bfseries to} $N-1$}
+      \STATE $c_p \gets 0$
+      \FOR{$j_1 \gets 0$ {\bfseries to} $D-1$}
+          \FOR{$j_2 \gets j_1$ {\bfseries to} $D-1$}
+              \STATE $\bm{A}^\kappa_{i{c_p}} \gets \bm{A}_{ij_1} \cdot \bm{A}_{ij_2}$
+              \STATE $c_p \gets c_p + 1$
+          \ENDFOR
+      \ENDFOR
+   \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+%\vskip 1.5in
+
+\subsection{Incomplete Second Degree CSR Polynomial Expansion Algorithm}
+\label{sec:final-algo}
+Now consider how this algorithm might be modified to accept a CSR matrix.
+Instead of walking directly down rows of $\bm{A}$, we will walk down sections of $\bm{c}$ and $\bm{d}$ partitioned by $\bm{p}$, and instead of inserting polynomial features into $\bm{A}^\kappa$, we will insert column numbers into $\bm{c}^\kappa$ and data elements into $\bm{d}^\kappa$.
+Throughout the algorithm, we use variables named $nnz$, with sub- or superscripts, to indicate the number of nonzero entries in either a matrix or a row of a matrix. 
+See Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
+
+%\vfill
+%\hspace{0pt}
+%\pagebreak
+% END vrtically centered
+
+
+\begin{algorithm}%[H]
+   \caption{Incomplete Sparse Second Order Polynomial Expansion}
+   \label{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}
+\begin{algorithmic}[1]
+   \STATE {\bfseries Input:} data $\bm{A}$, size $N \times D$
+   \STATE $\bm{p}^\kappa$ $\gets$ vector of size $N+1$
+   \STATE $\bm{p}^\kappa_0 \gets 0$
+   \STATE $nnz^\kappa \gets 0$
+   \FOR{$i \gets 0$ {\bfseries to} $N-1$}
+      \STATE $i_{start} \gets \bm{p}_i$
+      \STATE $i_{stop} \gets \bm{p}_{i+1}$
+      \STATE $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
+      \STATE $nnz^\kappa_i \gets \binom{|\bm{c}_i|}{2}$ \label{li:row_nnz_count}
+      \STATE $nnz^\kappa \gets nnz^\kappa + nnz^\kappa_i$
+      \STATE $\bm{p}^\kappa_{i+1} \gets \bm{p}^\kappa_i + nnz^\kappa_i$
+  \ENDFOR
+  
+  \STATE $\bm{p}^\kappa$ $\gets$ vector of size $N+1$
+  \STATE $\bm{c}^\kappa$ $\gets$ vector of size $nnz^\kappa$
+  \STATE $\bm{d}^\kappa$ $\gets$ vector of size $nnz^\kappa$
+  \STATE $n \gets 0$
+  
+  \FOR {$i \gets 0$ {\bfseries to} $N-1$}
+      \STATE $i_{start} \gets \bm{p}_i$
+      \STATE $i_{stop} \gets \bm{p}_{i+1}$
+      \STATE $\bm{c}_i \gets \bm{c}_{i_{start}:i_{stop}}$
+      \STATE $\bm{d}_i \gets \bm{d}_{i_{start}:i_{stop}}$
+      \FOR {$c_1 \gets 0$ {\bfseries to} $|\bm{c}_i|-1$}
+          \FOR {$c_2 \gets c_1$ {\bfseries to} $|\bm{c}_i|-1$}
+              \STATE $\bm{d}^\kappa_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
+              \STATE $\bm{c}^\kappa_{n} = ?$ \label{li:set_ck}
+              \STATE $n \gets n + 1$
+          \ENDFOR
+      \ENDFOR
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+The crux of the problem is at line 25 of Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
+Given the arbitrary columns involved in a polynomial feature of $\bm{A}_i$, we need to determine the corresponding column of $\bm{A}^\kappa_i$.
+We cannot simply reset a counter for each row as we did in the dense algorithm,  because only columns corresponding to nonzero values are stored.
+Any time a column that would have held a zero value is implicitly skipped, the counter would err.
+
+To develop a general algorithm, we require a mapping from a list of $K$ columns of $\bm{A}$ to a single column of $\bm{A}^\kappa$.
+If there are $D$ columns of $\bm{A}$ and $\binom{D}{K}$ columns of $\bm{A}^\kappa$, this can be accomplished by a bijective mapping of the following form:
+
+\begin{equation}
+(j_0, j_1, \dots, j_{K-1}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{j_0j_1 \dots i_{K-1}} \in \{0,1,\dots,\binom{D}{K}-1\} 
+\end{equation}
+
+where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{K-1} < D$, (ii) $(j_0, j_1, \dots, j_{K-1})$ are elements of $\bm{c}$, and (iii) $p_{j_0j_1 \dots i_{K-1}}$ is an element of $\bm{c}^\kappa$. (For interaction features, the constraint is $ 0 \le j_0 < j_1 < \dots < j_{K-1} < D$.)
+
+Stated more verbosely, we require a bijective mapping from tuples consisting of column indicies of the original input to where the column index of the corresponding product of features in the polynomial expansion.
+While any bijective mapping would suffice, a common order in which to produce polynomial features is $(0, 1)$, $(0, 2)$, $\dots$, $(0, D-1)$, $(1, 1)$, $(1, 2)$, $\dots$, $(1, D-1)$, $\dots$, $(D-1, D-1)$ for $K=2$ where the elements of the tuples are column indices.
+That is, the further to the right an index is, the sooner it is incremented.
+If we want for our algorithm to be backwards compatible with existing models, the mapping must use the this same ordering.
+
+%column indicies of a row vector $\vec{x}$ of an $N \times D$ input matrix, and $p_{i_0i_1 \dots i_{k-1}}$ is a column index into the polynomial expansion vector for $\vec{x}$ where the product of elements corresponding to indices $i_0, i_1, \dots, i_{k-1}$ will be stored.
+
+\section{Construction of Mappings}
+%\textbf{\color{red} This looks like the wrong mapping, since it uses $ i < j$ rather than $i \le j$, i.e., it's "interaction features" rather than polynomial features. Am I missing something? I've tried to rewrite a bit --jfh}
+
+Within this section, $i$, $j$, and $k$ denote column indices.
+We will construct mappings for second ($K=2$) and third ($K=3$) degree interaction and polynomial expansions.
+To accomplish this, we will require the triangle and tetrahedral numbers.
+We denote the $n$th triangle number as $T_2(n) = \frac{n(n+1)}{2}$ and the $n$th tetrahedral number as $T_3(n) = \frac{n(n+1)(n+2)}{6}$.
+
+For reference, we list the first five triangle and tetrahedral numbers in the following table:
+\begin{table}
+  \centering
+  \caption{The first five triangle ($T_2$) and tetrahedral ($T_3$) numbers.}
+  \begin{tabular}{| c | c | c |}
+    \hline
+    $n$ & $T_2(n)$ & $T_3(n)$ \\
+    \hline
+    0 & 0 & 0 \\
+    1 & 1 & 1 \\
+    2 & 3 & 4 \\
+    3 & 6 & 10 \\
+    4 & 10 & 20 \\
+    \hline  
+  \end{tabular}
+\end{table}
+
+\subsection{Second Degree Interaction Mapping}
+For second order interaction features, we require a bijective function that maps the elements of the ordered set
+\begin{equation}
+((0, 1), (0, 2), \dots, (1, 2), (1, 3), \dots, (D-2, D-1))
+\end{equation}
+to the elements of the ordered set
+\begin{equation}
+(0,1,\dots,\binom{D-1}{2}-1)
+\end{equation}
+
+For $D=4$, we can view the desired mapping $f$ as one that maps the coordinates of matrix cells to $0, 1, 2, 3$.
+If we fill the cells of the matrix with the codomain, the target matrix is as follows:
+\begin{align}
+\begin{bmatrix}
+x & 0 & 1 & 2 \\
+x & x & 3 & 4 \\
+x & x & x & 5 \\
+x & x & x & x
+\end{bmatrix}
+\label{eq:4by4mat}
+\end{align}
+where the entry in row $i$, column $j$, displays the value of $f(i, j)$.
+
+It will be simpler to instead construct a preliminary mapping, $r(i, j)$ of the following form:
+\begin{align}
+\begin{bmatrix}
+x & 6 & 5 & 4 \\
+x & x & 3 & 2 \\
+x & x & x & 1 \\
+x & x & x & x
+\end{bmatrix}
+\label{eq:preliminary4by4}
+\end{align}
+and then subtract the preliminary mapping from the total number of elements in the codomain to create the final mapping.
+Note that in equation \ref{eq:preliminary4by4} we have the following relation:
+
+\begin{equation}
+T_2(D-i-2) < e^i \le T_2(D-i-1)
+\end{equation}
+
+where $e^i$ is the value of any cell in row $i$ of equation \ref{eq:preliminary4by4}.
+
+Therefore, the following mapping will produce equation \ref{eq:preliminary4by4}:
+
+\begin{equation}
+r(i, j) = T_2(D-i-1) - (j - i - 1)
+\end{equation}
+
+We can now use this result to construct a mapping for equation \ref{4by4mat} by subtracting it from the size of the codomain:
+
+\begin{equation}
+f(i, j) = T_2(D-1) - [T_2(D-i-1) - (j - i - 1)]
+\end{equation}
+
+\subsection{Second Degree Polynomial Mapping}
+In this case, the target matrix is of the form
+
+\begin{align}
+\begin{bmatrix}
+0 & 1 & 2 & 3 \\
+x & 4 & 5 & 6 \\
+x & x & 7 & 8 \\
+x & x & x & 9
+\end{bmatrix}
+\label{eq:4by4mat}
+\end{align}
+
+A very similar analysis can be done for the $K=2$ case to yield
+
+\begin{equation}
+f(i, j) = T_2(D) - [T_2(D-i) - (j - i)]
+\end{equation}
+
+\subsection{Third Degree Interaction Mapping}
+For $K=3$ we can no longer view the necessary function as mapping matrix coordinates to cell values; rather, $DxDxD$ tensor coordinates to cell values.
+For simplicity, we will instead list the column index tuples and their necessary mappings in a table.
+We shall consider the case of $D=5$.
+
+Again, it is simpler to find a mapping $r(i, j, k)$ that maps to the reverse the target indices (plus one) and create a final mapping by subtracting that mapping from the number of elements in the codomain.
+We therefore seek a preliminary mapping of the form
+
+\begin{table}
+  \caption{Form of the required mapping for $K=3$, $D=5$.}
+  \begin{tabular}{| c | c | c |}
+    \hline
+    $(i, k, j)$ & $r(i,j,k)$ & $f(i,j,k)$ \\
+    \hline
+    $(0, 1, 2)$ & 10 & 0 \\
+    $(0, 1, 3)$ & 9 & 1 \\
+    $(0, 1, 4)$ & 8 & 2 \\
+    $(0, 2, 3)$ & 7 & 3 \\
+    $(0, 2, 4)$ & 6 & 4 \\
+    $(0, 3, 4)$ & 5 & 5 \\
+    \hline
+    $(1, 2, 3)$ & 4 & 6 \\
+    $(1, 2, 4)$ & 3 & 7 \\
+    $(1, 3, 4)$ & 2 & 8 \\
+    \hline
+    $(2, 3, 4)$ & 1 & 9 \\
+    \hline  
+  \end{tabular}
+\end{table}
+
+The mapping has been partitioned according to the $i$ dimension.
+Note that within each partition is a mapping very similar to the $K=2$ equivalent, but with the indices shifted by a function of $T_3$.
+For example, when $i=0$, the indices are shifted by $T_3(2)$, when $i=1$, the shift is $T_3(1)$, and finally, when $i=2$, the shift is $T_3(0)$.
+The preliminary mapping is therefore
+\begin{equation}
+r(i, j, k) = T_3(D-i-3) + T_2(D-j-1) - (k-j-1)
+\end{equation}
+
+and the final mapping is therefore
+
+\begin{align}
+f(i, j, k) = T_3(D-2) - [&T_3(D-i-3) + \\
+                         &T_2(D-j-1) - \\
+                         &(k-j-1)]
+\end{align}
+
+\subsection{Third Degree Polynomial Mapping}
+The analysis of the $K=3$ polynomial case is very similar to that of the $K=3$ interaction case.
+However, the target mapping now includes the edge of the simplex, as it included the diagonal of the matrix in the $K=2$ polynomial case.
+The analysis yields the mapping
+
+\begin{equation}
+f(i, j, k) = T_3(D) - [T_3(D-i-1) + T_2(D-j) - (k-j)]
+\end{equation}
+
+\section{Higher Order Mappings}
+It can be seen that mappings to higher orders can be constructed inductively.
+A $K$ degree mapping is a function of the $K$-simplex numbers and reparameterized versions of all lower order mappings.
+However, in practice, higher degrees are not often used as the dimensionality of the expanded vectors becomes prohibitively large.
+A fourth degree polynomial expansion of a $D=1000$ vector would have $\binom{1000}{4} = 41,417,124,750$ dimensions.
+
+\section{Final CSR Polynomial Expansion Algorithm}
+With the mapping from columns of $\bm{A}$ to a column of $\bm{A}^\kappa$, we can now write the final form of the innermost loop of the algorithm from \ref{sec:final-algo}.
+Let the polynomial mapping for $K=2$ be denoted $h^2$.
+Then the innermost loop can be completed as follows: %shown in Algorithm \ref{alg:Inner-Loop-of-Completed-Sparse-Second-Order-Polynomial-Expansion}.
+
+\begin{algorithm}[H]
+   \caption*{Completed Inner Loop of Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}}
+   \label{alg:Inner-Loop-of-Completed-Sparse-Second-Order-Polynomial-Expansion}
+\begin{algorithmic}[1]
+  \FOR {$c_2 \gets c_1$ {\bfseries to} $|\bm{c}_i|-1$}
+      \STATE $j_0 \gets \bm{c}_{c_0}$
+      \STATE $j_1 \gets \bm{c}_{c_1}$
+      \STATE $c_p \gets h^2(j_0, j_1)$
+      \STATE $\bm{d}^\kappa_{n} \gets \bm{d}_{c_0} \cdot \bm{d}_{c_1}$
+      \STATE $\bm{c}^\kappa_{n} = c_p$
+      \STATE $n \gets n + 1$
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm can be generalized to higher degrees by simply adding more nested loops, using higher order mappings, modifying the output dimensionality, and adjusting the counting of nonzero polynomial features in line \ref{li:row_nnz_count}.
+%For interaction features, the interaction mappings can be used in lieu of the polynomial mappings with the additional change of the output dimensionality and the number of nonzero features in each row (combinations without repetition instead of with).
+
+\section{Higher Degree and Interaction Algorithms}
+Most of the steps for higher degrees and interaction expansions (as opposed to polynomial) are the same as for the $K=2$ polynomial case.
+The differences are that for higher degrees, an extra loop is needed to iterate over another column index, and a different mapping is required.
+For interaction expansions, the column indices are never allowed to equal each other, so each loop executes one less time, and an interaction mapping is required.
+Also, for interaction expansions, the way $nnz$ is computed on line \ref{li:row_nnz_count} of Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
+Instead of $\binom{|\bm{c}_i|}{K}$, we have $\binom{|\bm{c}_i|-1}{K}$.
+
+\section{Time Complexity}
+\subsection{Analytical}
+\label{sec:analytical}
+
+Calculating $K$-degree polynomial features via our method for a vector of dimensionality $D$ and density $d$ requires $T_K(dD)$ products.
+The complexity of the algorithm, for fixed $K \ll dD$, is therefore
+\begin{align}
+&\Theta\left(T_K(dD)\right) =\\
+&\Theta\left(dD(dD+1)(dD+2)\dots(dD+K-1)\right) =\\
+&\Theta\left(d^KD^K\right)
+\end{align}
+
+For a matrix of size $N \times D$, the complexity is therefore $\Theta\left(Nd^KD^K\right)$.
+The dense algorithm (Algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}) does not leverage sparsity, and its complexity is $\Theta\left(ND^K\right)$.
+Since $0 \le d \le 1$, the sparse algorithm scales polynomially with the degree of the polynomial expansion.
+
+\subsection{Empirical Results}
+To empirically verify the average time complexity of our algorithm, we implemented both the sparse version and the baseline in the Cython programming language so that results would be directly comparable.
+We sought the relationships between runtime and the instance count ($N$), the instance dimensionality ($D$), and the instance density ($d$).
+
+To find these relationships, we individually varied $N$, $D$, and $d$ while holding the remaining two constant.
+For each of these configurations, we generated $20$ matrices and took the average time to reduce variance.
+The time to densify did not count against the dense algorithm.
+Figure-\ref{fig:all-vs-time} summarizes our findings.
+
+Varying the density ($d$) (column 1) shows that our algorithm scales polynomially with $d$, but that the baseline is unaffected by it.
+The runtimes for both algorithms increase polynomially with the dimensionality ($D$), but ours at a significantly reduced rate.
+Likewise, both algorithms scale linearly with the instance count ($N$), but ours to a much lesser degree.
+
+Note that the point at which the sparse and dense algorithms intersect when varying $d$ is to the right of $0.5$, which is when a matrix technically becomes sparse.
+The point at which this happens will depend on $D$, but the results show that our algorithm is useful even for some dense matrices.
+
+\begin{figure*}[ht!]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\textwidth]{all_vs_time.png}}
+\caption{
+%This figure shows how the runtimes of the sparse and dense %algorithms scale with $d$, $D$, and $N$.
+%Each point is the average of 20 samples.
+%The time to densify did not count against the dense %algorithm.
+%The figure shows that our algorithm scales polynomially with %$d$ and $D$ and linearly with $N$, which is in accordance %with the analysis of section \ref{sec:analytical}.
+Summary performance comparison plots for quadratic (top) and cubic (bottom) cases showing how the algorithm's performance varies with $d$, $D$, and $N$; our sparse algorithm is shown in blue, the dense algorithm in red. Each point in each graph is an average of 20 runs, and the time used in densification is not included in the dense-algorithm timings. In the quadratic case, sparsity loses its advantage at about 67\%, and at about 77\% for the cubic case, though these precise intersections depend on $D$. In general, taking advantage of sparsity shows large benefits, so large that it's difficult to see that the performance does not actually change linearly with $D$ (column 2); figure \ref{fig:sparse_D_and_N_vs_time} gives further details.}
+\label{fig:all-vs-time}
+\end{center}
+\vskip -0.2in
+\end{figure*}
+
+\begin{figure*}[ht!]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\textwidth]{sparse_D_and_N_vs_time.png}}
+\caption{A closer view of only the sparse runtimes while varying $D$ (left) and $N$ (right) for $d = 0.2$. The left subplot shows that varying $D$ gives polynomial growth in runtime; quadratic for $K = 2$ (dashed line) and cubic for $K = 3$ (dotted line). These nonlinearities were not apparent in Figure \ref{fig:all-vs-time} due to the much greater runtimes of the dense algorithm. The right subplot shows linear growth in runtime for both. These findings are in accordance with the analysis of section \ref{sec:analytical}.}
+\label{fig:sparse_D_and_N_vs_time}
+\end{center}
+\vskip -0.2in
+\end{figure*}
+
+%\section{Discussion}
+%A natural question to ask is ``Why not just use a decent hashing algorithm?'' There are two answers. The first is that doing so does not avoid the \emph{computation} of features that contain a zero factor, and that alone prevents a reduction in big-theta performance. The second is that hashing is great when you don't have a clear understanding of the distribution of items, but our index-computing function is simpler to compute than most hash functions, and provides perfect storage density. 
+
+\section{Conclusion}
+We have developed an algorithm for performing polynomial feature expansions on CSR matrices that scales polynomially with respect to the density of the matrix.
+The areas within machine learning that this work touches are not en vogue, but they are workhorses of industry, and every improvement in core representations has an impact across a broad range of applications. 
+%This improvement could therefore spare the burning of much fossil fuel.
+
+% The very first letter is a 2 line initial drop letter followed
+% by the rest of the first word in caps.
+% 
+% form to use if the first word consists of a single letter:
+% \IEEEPARstart{A}{demo} file is ....
+% 
+% form to use if you need the single drop letter followed by
+% normal text (unknown if ever used by IEEE):
+% \IEEEPARstart{A}{}demo file is ....
+% 
+% Some journals put the first two words in caps:
+% \IEEEPARstart{T}{his demo} file is ....
+% 
+% Here we have the typical use of a "T" for an initial drop letter
+% and "HIS" in caps to complete the first word.
+
+
+
+
+
+%\IEEEPARstart{T}{his} demo file is intended to serve as a ``starter file''
+%for IEEE journal papers produced under \LaTeX\ using
+%IEEEtran.cls version 1.7 and later.
+% You must have at least 2 lines in the paragraph with the drop letter
+% (should never be an issue)
+%I wish you the best of success.
+
+%\hfill mds
+ 
+%\hfill January 11, 2007
+
+%\subsection{Subsection Heading Here}
+%Subsection text here.
+
+% needed in second column of first page if using \IEEEpubid
+%\IEEEpubidadjcol
+
+%\vskip 1.5in
+
+
+
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation Results}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command, the
+% \label for the overall figure must come after \caption.
+% \hfil must be used as a separator to get equal spacing.
+% The subfigure.sty package works much the same way, except \subfigure is
+% used instead of \subfloat.
+%
+%\begin{figure*}[!t]
+%\centerline{\subfloat[Case I]\includegraphics[width=2.5in]{subfigcase1}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{subfigcase2}%
+%\label{fig_second_case}}}
+%\caption{Simulation results}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+
+
+% An example of a floating table. Note that, for IEEE style tables, the 
+% \caption command should come BEFORE the table. Table text will default to
+% \footnotesize as IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that IEEE does not put floats in the very first column - or typically
+% anywhere on the first page for that matter. Also, in-text middle ("here")
+% positioning is not used. Most IEEE journals use top floats exclusively.
+% Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
+% floats. This can be corrected via the \fnbelowfloat command of the
+% stfloats package.
+
+
+% if have a single appendix:
+%\appendix[Proof of the Zonklar Equations]
+% or
+%\appendix  % for no appendix heading
+% do not use \section anymore after \appendix, only \section*
+% is possibly needed
+
+% use appendices with more than one appendix
+% then use \section to start each appendix
+% you must declare a \section before using any
+% \subsection or using \label (\appendices by itself
+% starts a section numbered zero.)
+%
+
+
+%\appendices
+%\section{Proof of the First Zonklar Equation}
+%Appendix one text goes here.
+
+% you can choose not to have a title for an appendix
+% if you want by leaving the argument blank
+%\section{}
+%Appendix two text goes here.
+
+
+% use section* for acknowledgement
+%\section*{Acknowledgment}
+
+
+%The authors would like to thank...
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\bibliography{iccsda_sparse_poly}
+%\bibliographystyle{iccsda_sparse_poly}
+
+% biography section
+% 
+% If you have an EPS/PDF photo (graphicx package needed) extra braces are
+% needed around the contents of the optional argument to biography to prevent
+% the LaTeX parser from getting confused when it sees the complicated
+% \includegraphics command within an optional argument. (You could create
+% your own custom macro containing the \includegraphics command to make things
+% simpler here.)
+%\begin{biography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
+% or if you just want to reserve a space for a photo:
+
+%\begin{IEEEbiography}{Michael Shell}
+%Biography text here.
+%\end{IEEEbiography}
+
+% if you will not have a photo at all:
+%\begin{IEEEbiographynophoto}{John Doe}
+%Biography text here.
+%\end{IEEEbiographynophoto}
+
+% insert where needed to balance the two columns on the last page with
+% biographies
+%\newpage
+
+%\begin{IEEEbiographynophoto}{Andrew Nystrom}
+%Andrew is a Software Engineer in Google Inc's Research \& Machine Intelligence department.
+%\end{IEEEbiographynophoto}
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+% that's all folks
+\end{document}
+
+
