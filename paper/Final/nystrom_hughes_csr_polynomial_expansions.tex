@@ -112,11 +112,12 @@ The algorithm operates on and produces a compressed sparse row matrix with no de
 It works by defining a bijective function involving simplex numbers of column indices in the original matrix to column indices in the expanded matrix.
 This function allows for only the nonzero elements to be iterated over and multiplied together, greatly improving the expansion of sparse matrices in compressed sparse row format.
 For a vector of dimension $D$ and density $0 \le d \le 1$, the algorithm has time complexity $\Theta(d^KD^K)$ where $K$ is the polynomial-feature order; this  is an improvement by a factor $d^K$ over the standard method.
+[Keywords: compressed sparse row, csr, feature expansion, feature mapping, polynomial expansion, sparse matrix]
 \end{abstract}
 
 \section{Introduction}
 
-In machine learning and statistical modeling, feature mappings are intra-instance transformations, usually denoted by $x \mapsto \phi(\vec{x})$, that map instance vectors to higher dimensional spaces in which they are more linearly separable, allowing linear models to capture non-linearities \cite{yuan2012recent}.
+In machine learning and statistical modeling, feature mappings are intra-instance transformations, usually denoted by $x \mapsto \phi(\vec{x})$, that map instance vectors to higher dimensional spaces in which they are more linearly separable, allowing linear models to capture nonlinearities \cite{yuan2012recent}.
 
 A well known and widely used feature mapping is the \emph{polynomial expansion}, which produces a new feature for each degree-$k$ monomial in the original features. (If the original features are $x,y,z$, the order-2 polynomial features are $x^2, y^2, z^2, xy, xz, xy$, and the order-3 ones are $x^3, y^3, z^3, x^2y, x^2z, xy^2, y^2 z, xz^2, yz^2,$ and $xyz$.
 A $K$-order polynomial feature expansion of the feature space allows a linear model to learn polynomial relationships between dependent and independent variables.
@@ -140,7 +141,7 @@ While the algorithm we describe uses CSR matrices, it can be readily adapted to 
 We denote matrices by uppercase bold letters thus: $\bm{A}$. 
 The $i^{th}$ the row of $\bm{A}$ is written $\bm{a}_i$. All vectors are written in bold, and  $\bm{a}$, with no subscript, is a vector. Non-bold letters are scalars. We sometimes use `slice' notation on subscripts, so that $x_{2:5}$ indicates the second through fifth elements of the vector $x$.
 
-A compressed sparse row (CSR) matrix representation of an $r$-row matrix $\bm{A}$ consists of three vectors: $\bm{c}$, $\bm{d}$, and $\bm{p}$ and a single number: the number $N$ of columns of $\bm{A}$. The vectors
+A CSR matrix representation of an $r$-row matrix $\bm{A}$ consists of three vectors: $\bm{c}$, $\bm{d}$, and $\bm{p}$ and a single number: the number $N$ of columns of $\bm{A}$. The vectors
 $\bm{c}$ and $\bm{d}$ contain the same number of elements, and hold the column indices and data values, respectively, of all nonzero elements of $\bm{A}$.
 The vector $\bm{p}$ has $r$ entries. The values in $\bm{p}$ index both $\bm{c}$ and $\bm{d}$. The $i$th entry $\bm{p}_i$ of $\bm{p}$ tells where
 the data describing nonzero columns of $\bm{a}_i$ are within the other two vectors: $\bm{c}_{\bm{p}_i:\bm{p}_{i+1}}$ contain the column indices of those entries; $\bm{d}_{\bm{p}_i:\bm{p}_{i+1}}$ contain the entries themselves.
@@ -156,9 +157,9 @@ For example, if $nnz_i$ is the number of nonezero elements in the vector $i$th r
 Lowercase $k$ refers to a column index.
 
 \section{Motivation}
-In this section, we present a strawman algorithm for computing polynomial feature expansions on dense matrices.
+In this section we present a strawman algorithm for computing polynomial feature expansions on dense matrices.
 We then modify the algorithm  slightly to operate on a CSR matrix, to expose its infeasibility in that context.
-We then show how the algorithm would be feasible with an added component, which we then derive in the following section.
+We then show how the algorithm would be feasible with a bijective mapping from $k$-tuples of column indicies in the input matrix to column indices in the polynomial expansion matrix, which we then derive in the following section.
 
 It should be noted that in practice, as well as in our code and experiments, expansions for degrees $1, 2, \dots, k-1$ are also generated.
 The final design matrix is the augmentation of all such expansions.
@@ -259,7 +260,7 @@ If there are $D$ columns of $\bm{A}$ and $\binom{D}{K}$ columns of $\bm{A}^\kapp
 (j_0, j_1, \dots, j_{K-1}) \rightarrowtail \hspace{-1.9ex} \twoheadrightarrow p_{j_0j_1 \dots i_{K-1}} \in \{0,1,\dots,\binom{D}{K}-1\} 
 \end{equation}
 
-where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{K-1} < D$, (ii) $(j_0, j_1, \dots, j_{K-1})$ are elements of $\bm{c}$ and (iii) $p_{j_0j_1 \dots i_{K-1}}$ is an element of $\bm{c}^\kappa$. (For interaction features, the constraint is $ 0 \le j_0 < j_1 < \dots < j_{K-1} < D$.)
+where (i) $ 0 \le j_0 \le j_1 \le \dots \le j_{K-1} < D$, (ii) $(j_0, j_1, \dots, j_{K-1})$ are elements of $\bm{c}$, and (iii) $p_{j_0j_1 \dots i_{K-1}}$ is an element of $\bm{c}^\kappa$. (For interaction features, the constraint is $ 0 \le j_0 < j_1 < \dots < j_{K-1} < D$.)
 
 Stated more verbosely, we require a bijective mapping from tuples consisting of column indicies of the original input to where the column index of the corresponding product of features in the polynomial expansion.
 While any bijective mapping would suffice, a common order in which to produce polynomial features is $(0, 1)$, $(0, 2)$, $\dots$, $(0, D-1)$, $(1, 1)$, $(1, 2)$, $\dots$, $(1, D-1)$, $\dots$, $(D-1, D-1)$ for $K=2$ where the elements of the tuples are column indices.
@@ -273,12 +274,13 @@ If we want for our algorithm to be backwards compatible with existing models, th
 
 Within this section, $i$, $j$, and $k$ denote column indices.
 We will construct mappings for second ($K=2$) and third ($K=3$) degree interaction and polynomial expansions.
-In order to accomplish this, we will require the triangle and tetrahedral numbers.
+To accomplish this, we will require the triangle and tetrahedral numbers.
 We denote the $n$th triangle number as $T_2(n) = \frac{n(n+1)}{2}$ and the $n$th tetrahedral number as $T_3(n) = \frac{n(n+1)(n+2)}{6}$.
 
 For reference, we list the first five triangle and tetrahedral numbers in the following table:
 
 \begin{tabular}{| c | c | c |}
+  \caption{The first five triangle and tetrahedral numbers.}
   \hline
   $n$ & $T_2(n)$ & $T_3(n)$ \\
   \hline
@@ -364,7 +366,7 @@ f(i, j) = T_2(D) - [T_2(D-i) - (j - i)]
 \end{equation}
 
 \subsection{Third Degree Interaction Mapping}
-For $K=3$, we can no longer view the necessary function as mapping matrix coordinates to cell values, but rather, $DxDxD$ tensor coordinates to cell values.
+For $K=3$ we can no longer view the necessary function as mapping matrix coordinates to cell values; rather, $DxDxD$ tensor coordinates to cell values.
 For simplicity, we will instead list the column index tuples and their necessary mappings in a table.
 We shall consider the case of $D=5$.
 
@@ -408,7 +410,7 @@ f(i, j, k) = T_3(D-2) - [&T_3(D-i-3) + \\
 
 \subsection{Third Degree Polynomial Mapping}
 The analysis of the $K=3$ polynomial case is very similar to that of the $K=3$ interaction case.
-However the target mapping now includes the edge of the simplex, as it included the diagonal of the matrix in the $K=2$ polynomial case.
+However, the target mapping now includes the edge of the simplex, as it included the diagonal of the matrix in the $K=2$ polynomial case.
 The analysis yields the mapping
 
 \begin{equation}
@@ -448,7 +450,7 @@ The algorithm can be generalized to higher degrees by simply adding more nested 
 Most of the steps for higher degrees and interaction expansions (as opposed to polynomial) are the same as for the $K=2$ polynomial case.
 The differences are that for higher degrees, an extra loop is needed to iterate over another column index, and a different mapping is required.
 For interaction expansions, the column indices are never allowed to equal each other, so each loop executes one less time, and an interaction mapping is required.
-Also, for interaction expansions, the way $nnz$ is computed on line \ref{li:row_nnz_count} of algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
+Also, for interaction expansions, the way $nnz$ is computed on line \ref{li:row_nnz_count} of Algorithm \ref{alg:Incomplete-Sparse-Second-Order-Polynomial-Expansion}.
 Instead of $\binom{|\bm{c}_i|}{K}$, we have $\binom{|\bm{c}_i|-1}{K}$.
 
 \section{Time Complexity}
@@ -464,7 +466,7 @@ The complexity of the algorithm, for fixed $K \ll dD$, is therefore
 \end{align}
 
 For a matrix of size $N \times D$, the complexity is therefore $\Theta\left(Nd^KD^K\right)$.
-The dense algorithm (algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}) does not leverage sparsity, and its complexity is $\Theta\left(ND^K\right)$.
+The dense algorithm (Algorithm \ref{alg:Dense-Second-Order-Polynomial-Expansion}) does not leverage sparsity, and its complexity is $\Theta\left(ND^K\right)$.
 Since $0 \le d \le 1$, the sparse algorithm scales polynomially with the degree of the polynomial expansion.
 
 \subsection{Empirical Results}
@@ -481,7 +483,7 @@ The runtimes for both algorithms increase polynomially with the dimensionality (
 Likewise, both algorithms scale linearly with the instance count ($N$), but ours to a much lesser degree.
 
 Note that the point at which the sparse and dense algorithms intersect when varying $d$ is to the right of $0.5$, which is when a matrix technically becomes sparse.
-The point at which this happens will depend on $D$, but this shows that our algorithm is useful even for some dense matrices.
+The point at which this happens will depend on $D$, but the results show that our algorithm is useful even for some dense matrices.
 
 \begin{figure*}[ht!]
 \vskip 0.2in
@@ -518,7 +520,7 @@ The areas within machine learning that this work touches are not en vogue, but t
 
 \newpage
 
-\bibliography{sparse_poly_icml}
+\bibliography{nystrom_hughes_csr_polynomial_expansions}
 \bibliographystyle{icml2017}
 
 \end{document} 
