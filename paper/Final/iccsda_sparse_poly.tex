@@ -499,10 +499,10 @@
 
 \begin{abstract}
 %\boldmath
-An algorithm is provided for performing polynomial feature expansions whose input and output are compressed sparse row (CSR) matrices.
+An algorithm is provided for performing polynomial feature expansions that both operates on and produces compressed sparse row (CSR) matrices.
 Previously, no such algorithm existed, and performing these expansions on CSR matrices required an intermediate densification step.
 %The algorithm operates on and produces a compressed sparse row matrix with no densification.
-The algorithm works by using a bijective function involving simplex numbers of column indices in the original matrix to column indices in the expanded matrix.
+The algorithm performs a $K$-degree expansion by using a bijective function involving $K$-simplex numbers of column indices in the original matrix to column indices in the expanded matrix.
 Not only is space saved by working only in CSR format, but the bijective function allows for only the nonzero elements to be iterated over and multiplied together during the expansion, greatly improving average time complexity.
 For a vector of dimension $D$ and density $0 \le d \le 1$, the algorithm has time complexity $\Theta(d^KD^K)$ where $K$ is the polynomial-feature order; this  is an improvement by a factor $d^K$ over the standard method.
 \end{abstract}
