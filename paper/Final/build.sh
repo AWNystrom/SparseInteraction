@@ -1,0 +1,6 @@
+rm sparse_poly_proper_order.pdf
+pdflatex sparse_poly_proper_order
+bibtex sparse_poly_proper_order
+pdflatex sparse_poly_proper_order
+pdflatex sparse_poly_proper_order
+open sparse_poly_proper_order.pdf
